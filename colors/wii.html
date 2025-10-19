@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Gel Glass Wii Profile — 30 Colors</title>
+<style>
+body {margin:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));font-family:monospace;text-align:center;}
+div {height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#333;font-size:0.7em;border:0.5px solid rgba(0,0,0,0.05);}
+span{opacity:0.7;}
+</style>
+</head>
+<body>
+<script>
+const colors = [
+["#E9ECEF","Soft Pearl"],["#D7DBDE","Mist Silver"],["#C9CFD2","Ice Silver"],
+["#BFC4C6","Cloud Grey"],["#F9FAFB","Soft White"],
+["#CFEFE0","Mint Cream"],["#9BE4B0","Mint Aqua"],["#A2E6C8","Aqua Lens"],
+["#7DD7A2","Seafoam"],["#5FBF8E","Deep Mint"],
+["#B4E4FF","Glow Blue"],["#8CC9F8","Sky Glow"],["#4B91C9","Ocean Pulse"],
+["#3E6E9E","Deep Channel"],["#2F557A","Aqua Steel"],
+["#D5B8F8","Lavender Cream"],["#B6B4F0","Mist Violet"],["#A2A0EA","Dream Lilac"],
+["#8F8AE2","Cloud Plum"],["#6E68C5","Deep Indigo"],
+["#FFB3C1","Guava Cloud"],["#F89EAF","Rose Dew"],["#FFD6B8","Light Apricot"],
+["#FFCBA2","Soft Peach"],["#FFB984","Melon Fade"],
+["#FFF4B8","Lemon Mist"],["#AEB5B8","Frost Steel"],["#80868B","Slate Grey"],
+["#C3C7CA","Chrome Silver"],["#62676B","Deep Graphite"]
+];
+document.body.innerHTML = colors.map(([c,n]) => 
+  `<div style="background:${c}">${c}<br><span>${n}</span></div>`).join('');
+</script>
+</body>
+</html>
+

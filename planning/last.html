@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>Gel-Glass Archipelago — Full Spread Bubbles</title>
+<style>
+:root {
+  --color-bg:#bfc4c6;
+  --color-surface:#aeb5b8;
+  --color-primary:#9be4b0;
+  --color-secondary:#8cc9f8;
+  --color-text:#4b91c9;
+  --color-accent:#a2e6c8;
+  --color-button-top:#6bb2f0;   /* soft blue gradient */
+  --color-button-bottom:#3f88d5;
+}
+html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;}
+body{
+  background:radial-gradient(circle at 50% 45%,var(--color-bg),var(--color-surface));
+  font-family:Arial, sans-serif; /* body in Arial */
+  color:var(--color-text);
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
+
+/* background glow */
+body::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 30%30%,rgba(255,255,255,.15),transparent 70%),
+             radial-gradient(circle at 80%70%,rgba(180,255,200,.08),transparent 70%);
+  filter:blur(45px);opacity:.55;z-index:0;
+}
+.texture{
+  position:absolute;inset:0;
+  background-image:url('https://transparenttextures.com/patterns/white-paper.png');
+  opacity:.03;mix-blend-mode:overlay;pointer-events:none;z-index:1;
+}
+
+/* === FULLSCREEN bubble layer === */
+#bubbles{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:2; /* keep under .screen (z=5), but we'll handle clicks globally */
+}
+.bubble{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle at 35%35%,
+              rgba(255,255,255,.95)0%,
+              rgba(255,255,255,.75)25%,
+              rgba(255,255,255,.35)65%,
+              transparent 100%);
+  box-shadow:
+    0 0 12px rgba(255,255,255,.5),
+    0 0 24px rgba(200,235,255,.25),
+    0 0 60px rgba(180,240,255,.18);
+  pointer-events:none; /* clicks handled at document level */
+  opacity:0;
+  will-change:transform,opacity;
+  transition:opacity .25s ease-out;
+}
+
+/* === Foreground content centered === */
+.screen{
+  position:relative;
+  z-index:5;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  gap:1.2rem;
+}
+h1{
+  font-family:"Arial Narrow", Arial, sans-serif; /* titles in Arial Narrow */
+  font-weight:700;
+  text-shadow:0 1px 4px rgba(255,255,255,.6);
+}
+.palette{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+}
+.swatch{
+  width:55px;height:55px;border-radius:14px;
+  background:radial-gradient(circle at center,var(--color) 0%,rgba(255,255,255,.7)120%);
+  border:1px solid rgba(255,255,255,.5);
+  box-shadow:0 2px 6px rgba(50,60,70,.1);
+  backdrop-filter:blur(8px) saturate(130%);
+}
+.panel{
+  background:linear-gradient(180deg,#e1e3e3 0%,#c3c8c7 100%);
+  border-radius:30px;padding:1.4rem 2.2rem;
+  border:2px solid rgba(255,255,255,.7);
+  box-shadow:inset 0 2px 4px rgba(255,255,255,.4),
+             inset 0 -3px 5px rgba(0,0,0,.08),
+             0 4px 14px rgba(50,60,70,.18);
+  backdrop-filter:blur(15px) saturate(140%);
+}
+
+/* soft blue gradient button + glow on click */
+button{
+  margin-top:1rem;padding:.8rem 1.6rem;
+  font-family:"Arial Narrow", Arial, sans-serif;
+  font-weight:600;
+  border-radius:16px;border:1px solid rgba(255,255,255,.85);
+  background:linear-gradient(180deg,var(--color-button-top),var(--color-button-bottom));
+  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2);
+  box-shadow:0 0 0 rgba(0,0,0,0);
+  cursor:pointer;
+  transition:box-shadow .25s ease, transform .15s ease, filter .15s ease;
+}
+button:hover{
+  box-shadow:0 0 22px rgba(75,145,201,0.5);
+  filter:brightness(1.04);
+}
+button:active{
+  /* glow instead of depress */
+  box-shadow:0 0 30px rgba(75,145,201,0.85), 0 0 60px rgba(75,145,201,0.4);
+  transform:none;
+}
+
+/* glowing cursor (soft edges) */
+.cursor{
+  position:fixed;top:0;left:0;width:28px;height:28px;border-radius:50%;
+  background:radial-gradient(circle at center,var(--color-primary),var(--color-secondary));
+  box-shadow:
+    0 0 18px rgba(150,200,255,0.5),
+    0 0 40px rgba(150,200,255,0.25),
+    0 0 80px rgba(150,200,255,0.18);
+  filter:blur(2px);
+  pointer-events:none;mix-blend-mode:screen;opacity:.85;
+  transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;
+  z-index:9999;
+}
+button:hover~.cursor{width:36px;height:36px;opacity:1;}
+</style>
+</head>
+<body>
+<div class="texture"></div>
+<div id="bubbles"></div>
+
+<div class="screen">
+  <h1>Gel-Glass Archipelago</h1>
+  <div class="palette">
+    <div class="swatch" style="--color:var(--color-bg)"></div>
+    <div class="swatch" style="--color:var(--color-surface)"></div>
+    <div class="swatch" style="--color:var(--color-primary)"></div>
+    <div class="swatch" style="--color:var(--color-secondary)"></div>
+    <div class="swatch" style="--color:var(--color-accent)"></div>
+  </div>
+  <div class="panel">
+    <p>Click or tap a bubble to pop it 💥</p>
+    <button>Start</button>
+  </div>
+</div>
+
+<script>
+/* === Glowing cursor with smooth tracking === */
+const cursor = document.createElement("div");
+cursor.classList.add("cursor");
+document.body.appendChild(cursor);
+
+let targetX = innerWidth/2, targetY = innerHeight/2;
+let currentX = targetX, currentY = targetY;
+
+addEventListener("mousemove", e => { targetX = e.clientX; targetY = e.clientY; });
+addEventListener("pointerdown",()=>{
+  cursor.style.transform=`translate(-50%,-50%) scale(0.85)`; cursor.style.opacity="0.6";
+});
+addEventListener("pointerup",()=>{
+  cursor.style.transform=`translate(-50%,-50%) scale(1)`; cursor.style.opacity="0.85";
+});
+function updateCursor(){
+  const speed = 0.28; // tighter follow
+  currentX += (targetX - currentX) * speed;
+  currentY += (targetY - currentY) * speed;
+  cursor.style.left = currentX + "px";
+  cursor.style.top = currentY + "px";
+  requestAnimationFrame(updateCursor);
+}
+updateCursor();
+
+/* === Bubbles + fixed popping via global pointer detection === */
+const NUM=24;
+const bubbles=[];
+let W=innerWidth, H=innerHeight;
+const layer=document.getElementById("bubbles");
+
+function createBubble(){
+  const el=document.createElement("div");
+  el.className="bubble";
+  const r=30+Math.random()*40;
+  el.style.width=el.style.height=r+"px";
+  const b={
+    el,
+    r: r/2,
+    x: Math.random()*W,
+    y: H*Math.random(),
+    vx:(Math.random()-.5)*0.8,
+    vy:-0.45-Math.random()*0.35,
+    popped:false
+  };
+  layer.appendChild(el);
+  bubbles.push(b);
+  return b;
+}
+for(let i=0;i<NUM;i++) createBubble();
+
+/* Pop the bubble nearest to the pointer if within its radius */
+function tryPopAt(x,y){
+  // ignore UI clicks: if on/inside a button, skip popping
+  const el = document.elementFromPoint(x,y);
+  if (el && (el.closest('button') || el.closest('.panel'))) return;
+
+  // find closest bubble center to the pointer
+  let nearest = null, nd2 = Infinity;
+  for (const b of bubbles){
+    const dx = x - b.x, dy = y - b.y;
+    const d2 = dx*dx + dy*dy;
+    if (d2 < (b.r*b.r) && d2 < nd2 && !b.popped){ // inside this bubble
+      nd2 = d2; nearest = b;
+    }
+  }
+  if (nearest){
+    nearest.popped = true;
+    nearest.el.style.opacity = 0;
+    // quick little pop flash (optional)
+    nearest.el.style.transition = 'opacity .18s ease-out';
+    setTimeout(()=>{
+      nearest.x = Math.random()*W;
+      nearest.y = H + 80;
+      nearest.vx = (Math.random()-.5)*0.8;
+      nearest.vy = -0.45 - Math.random()*0.35;
+      nearest.popped = false;
+      nearest.el.style.opacity = 0.22;
+      nearest.el.style.transition = 'opacity .25s linear';
+    }, 220);
+  }
+}
+
+/* Use pointer events so mobile taps work too */
+addEventListener('pointerdown', e => {
+  tryPopAt(e.clientX, e.clientY);
+});
+
+/* Animation loop */
+function animate(){
+  const t = Date.now();
+  for(const b of bubbles){
+    if (!b.popped){
+      b.x += b.vx;
+      b.y += b.vy;
+
+      if (b.x < b.r || b.x > W - b.r) b.vx *= -1;
+      b.vx += Math.sin(t/4000 + b.r)*0.0003;
+
+      if (b.y < H*0.9 && b.y > 0) b.el.style.opacity = 0.9;
+      if (b.y < 180) b.el.style.opacity = Math.max(0, b.y/180);
+    }
+
+    if (b.y < -b.r){
+      b.y = H + 60;
+      b.x = Math.random()*W;
+      b.vy = -0.45 - Math.random()*0.35;
+      b.el.style.opacity = 0.2;
+    }
+    b.el.style.transform = `translate3d(${b.x-b.r}px,${b.y-b.r}px,0)`;
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* Handle resize */
+addEventListener('resize', ()=>{ W = innerWidth; H = innerHeight; });
+</script>
+</body>
+</html>
+

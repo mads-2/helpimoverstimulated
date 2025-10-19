@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Glass Fruit Mist Palette</title>
+<style>
+:root {
+  --color-bg: #F5F9F8;        /* Cloud Milk */
+  --color-surface: #E3F0F2;   /* Aqua Frost */
+  --color-primary: #BEE4C6;   /* Mint Bloom */
+  --color-secondary: #C4D9F5; /* Sky Jelly */
+  --color-highlight: #FAFCFB; /* Mist Light */
+  --color-text: #49657A;      /* Fog Blue */
+  --color-line: #8B7AA9;      /* Glass Plum */
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito", "Inter", sans-serif;
+  background: radial-gradient(circle at 30% 30%, #F5F9F8 0%, #E3F0F2 80%);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  min-height: 100vh;
+}
+
+/* Header */
+h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  background: linear-gradient(90deg, #C4D9F5, #BEE4C6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 2rem;
+}
+
+/* Swatches */
+.palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 14px;
+  max-width: 700px;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.swatch {
+  background: var(--color);
+  border-radius: 20px;
+  padding: 40px 10px;
+  text-align: center;
+  font-weight: 500;
+  color: var(--color-text);
+  box-shadow: 0 4px 14px rgba(73, 101, 122, 0.08);
+  backdrop-filter: blur(24px) saturate(130%);
+  border: 1px solid rgba(255,255,255,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.swatch:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(73, 101, 122, 0.15);
+}
+
+/* Card */
+.card {
+  background: rgba(227, 240, 242, 0.5);
+  border: 1px solid rgba(255,255,255,0.5);
+  box-shadow: 0 6px 30px rgba(73,101,122,0.15);
+  border-radius: 28px;
+  padding: 2.5rem;
+  max-width: 500px;
+  text-align: center;
+  backdrop-filter: blur(28px) saturate(140%);
+  transition: background 0.5s ease, transform 0.4s ease;
+}
+.card:hover {
+  background: rgba(245,249,248,0.55);
+  transform: translateY(-4px);
+}
+
+.card h2 {
+  margin-top: 0;
+  background: linear-gradient(90deg, #BEE4C6, #C4D9F5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Button */
+button {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 0.8rem 1.6rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(167,196,224,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(167,196,224,0.45);
+}
+
+/* Swatch variables */
+#bg     { --color: var(--color-bg); }
+#surf   { --color: var(--color-surface); }
+#prim   { --color: var(--color-primary); }
+#sec    { --color: var(--color-secondary); }
+#hl     { --color: var(--color-highlight); }
+#text   { --color: var(--color-text); color: #fff; }
+#line   { --color: var(--color-line); color: #fff; }
+
+</style>
+</head>
+<body>
+
+<h1>🍈 Glass Fruit Mist Palette</h1>
+
+<div class="palette">
+  <div id="bg" class="swatch">Cloud Milk<br>#F5F9F8</div>
+  <div id="surf" class="swatch">Aqua Frost<br>#E3F0F2</div>
+  <div id="prim" class="swatch">Mint Bloom<br>#BEE4C6</div>
+  <div id="sec" class="swatch">Sky Jelly<br>#C4D9F5</div>
+  <div id="hl" class="swatch">Mist Light<br>#FAFCFB</div>
+  <div id="text" class="swatch">Fog Blue<br>#49657A</div>
+  <div id="line" class="swatch">Glass Plum<br>#8B7AA9</div>
+</div>
+
+<div class="card">
+  <h2>Glassy Card Example</h2>
+  <p>
+    Inspired by the image’s translucent fruit tones —  
+    soft aqua, mint, and sky layered over a misty white background.  
+    The entire palette feels light, glossy, and balanced.
+  </p>
+  <button>Try Me</button>
+</div>
+
+</body>
+</html>
+

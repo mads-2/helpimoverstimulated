@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>Gel-Glass Archipelago — Calm Glow Drift</title>
+<style>
+:root {
+  --color-bg:#bfc4c6;
+  --color-surface:#aeb5b8;
+  --color-primary:#9be4b0;
+  --color-secondary:#8cc9f8;
+  --color-text:#4b91c9;
+  --color-accent:#a2e6c8;
+}
+html{background:#bfc4c6;}
+body{
+  margin:0;height:100vh;overflow:hidden;
+  display:flex;justify-content:center;align-items:center;
+  background:radial-gradient(circle at 50% 45%,var(--color-bg),var(--color-surface));
+  font-family:Monaco,monospace;position:relative;
+  -webkit-font-smoothing:antialiased;color:var(--color-text);
+}
+
+/* Subtle glow field */
+body::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 30%30%,rgba(255,255,255,.15),transparent 70%),
+             radial-gradient(circle at 80%70%,rgba(180,255,200,.08),transparent 70%);
+  filter:blur(45px);opacity:.55;z-index:0;
+}
+
+/* Paper texture overlay */
+.texture{
+  position:absolute;inset:0;
+  background-image:url('https://transparenttextures.com/patterns/white-paper.png');
+  opacity:.03;mix-blend-mode:overlay;pointer-events:none;z-index:1;
+}
+
+/* Glowing bubbles */
+.bubble{
+  position:absolute;
+  border-radius:50%;
+  background:radial-gradient(circle at 35%35%,
+              rgba(255,255,255,.95)0%,
+              rgba(255,255,255,.75)25%,
+              rgba(255,255,255,.35)65%,
+              transparent 100%);
+  box-shadow:
+    0 0 12px rgba(255,255,255,.5),
+    0 0 24px rgba(200,235,255,.25),
+    0 0 60px rgba(180,240,255,.18);
+  pointer-events:none;z-index:0;opacity:0;
+  will-change: transform, opacity;
+  transition:opacity .7s linear;
+  filter:brightness(1.1);
+}
+
+/* Layout */
+.screen{
+  position:relative;z-index:2;text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:1.2rem;
+}
+h1{
+  font-family:"Arial Narrow",Arial,sans-serif;
+  font-weight:700;text-shadow:0 1px 4px rgba(255,255,255,.6);
+}
+.palette{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;
+}
+.swatch{
+  width:55px;height:55px;border-radius:14px;
+  background:radial-gradient(circle at center,var(--color) 0%,rgba(255,255,255,.7)120%);
+  border:1px solid rgba(255,255,255,.5);
+  box-shadow:0 2px 6px rgba(50,60,70,.1);
+  backdrop-filter:blur(8px) saturate(130%);
+}
+
+/* Glassy panel */
+.panel{
+  background:linear-gradient(180deg,#e1e3e3 0%,#c3c8c7 100%);
+  border-radius:30px;padding:1.4rem 2.2rem;
+  border:2px solid rgba(255,255,255,.7);
+  box-shadow:inset 0 2px 4px rgba(255,255,255,.4),
+             inset 0 -3px 5px rgba(0,0,0,.08),
+             0 4px 14px rgba(50,60,70,.18);
+  backdrop-filter:blur(15px) saturate(140%);
+}
+
+/* Interactive button */
+button{
+  margin-top:1rem;padding:.8rem 1.6rem;
+  font-family:"Arial Narrow",Arial,sans-serif;font-weight:600;
+  border-radius:16px;border:1px solid rgba(255,255,255,.85);
+  background:linear-gradient(180deg,#a7e5bb 0%,#7cc5ef 100%);
+  color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2);
+  box-shadow:inset 0 2px 4px rgba(255,255,255,.5),
+             inset 0 -2px 4px rgba(0,0,0,.15),
+             0 5px 14px rgba(100,180,200,.35);
+  cursor:pointer;
+  transition:transform .15s ease, box-shadow .2s ease;
+}
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 18px rgba(100,180,200,.4);
+}
+button:active{
+  transform:translateY(1px) scale(0.97);
+  box-shadow:inset 0 2px 3px rgba(0,0,0,.25);
+}
+
+/* Gradient glowing cursor */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--color-primary), var(--color-secondary));
+  box-shadow: 0 0 10px rgba(150,200,255,0.6), 0 0 20px rgba(150,200,255,0.4);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+  z-index: 9999;
+}
+button:hover ~ .cursor {
+  width: 36px;
+  height: 36px;
+  opacity: 1;
+}
+</style>
+</head>
+<body>
+<div class="texture"></div>
+<div class="screen">
+  <h1>Gel-Glass Archipelago</h1>
+
+  <div class="palette">
+    <div class="swatch" style="--color:var(--color-bg)"></div>
+    <div class="swatch" style="--color:var(--color-surface)"></div>
+    <div class="swatch" style="--color:var(--color-primary)"></div>
+    <div class="swatch" style="--color:var(--color-secondary)"></div>
+    <div class="swatch" style="--color:var(--color-accent)"></div>
+  </div>
+
+  <div class="panel">
+    <p>Glowing, softly drifting bubbles across the screen.<br>
+       Balanced speed, color, and calm atmosphere.</p>
+    <button>Start</button>
+  </div>
+</div>
+
+<script>
+/* === glowing cursor === */
+const cursor = document.createElement("div");
+cursor.classList.add("cursor");
+document.body.appendChild(cursor);
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top  = e.clientY + "px";
+});
+document.addEventListener("mousedown", () => {
+  cursor.style.transform = "translate(-50%, -50%) scale(0.85)";
+  cursor.style.opacity   = "0.6";
+});
+document.addEventListener("mouseup", () => {
+  cursor.style.transform = "translate(-50%, -50%) scale(1)";
+  cursor.style.opacity   = "0.85";
+});
+
+/* === bubbles === */
+const NUM = 20;
+const bubbles = [];
+const W = window.innerWidth, H = window.innerHeight;
+const layer = document.createElement("div");
+document.body.appendChild(layer);
+
+for (let i = 0; i < NUM; i++) {
+  const b = document.createElement("div");
+  b.className = "bubble";
+  const r = 30 + Math.random() * 45;
+  b.style.width = b.style.height = r + "px";
+  b.x = Math.random() * W;            // spread evenly across screen
+  b.y = H * Math.random();
+  b.vx = (Math.random() - 0.5) * 0.6;
+  b.vy = -0.5 - Math.random() * 0.4;  // slower drift upward
+  b.r = r / 2;
+  layer.appendChild(b);
+  bubbles.push(b);
+}
+
+function animate() {
+  for (let i = 0; i < NUM; i++) {
+    const a = bubbles[i];
+    a.x += a.vx;
+    a.y += a.vy;
+    if (a.x < a.r || a.x > W - a.r) a.vx *= -1;
+
+    // gentle side drift current
+    a.vx += Math.sin(Date.now() / 4000 + i) * 0.00025;
+
+    // fade logic
+    if (a.y < H * 0.9 && a.y > 0) a.style.opacity = 0.9;
+    if (a.y < 180) a.style.opacity = Math.max(0, a.y / 180);
+
+    // collisions
+    for (let j = i + 1; j < NUM; j++) {
+      const b = bubbles[j];
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy);
+      const min = a.r + b.r;
+      if (dist < min && dist > 0) {
+        const overlap = (min - dist) / 2;
+        const nx = dx / dist, ny = dy / dist;
+        a.x -= nx * overlap; a.y -= ny * overlap;
+        b.x += nx * overlap; b.y += ny * overlap;
+        const temp = a.vx; a.vx = b.vx; b.vx = temp;
+      }
+    }
+
+    // reset off top
+    if (a.y < -a.r) {
+      a.y = H + 60;
+      a.x = Math.random() * W;
+      a.vy = -0.5 - Math.random() * 0.4;
+      a.style.opacity = 0.2;
+    }
+
+    a.style.transform = `translate3d(${a.x - a.r}px, ${a.y - a.r}px, 0)`;
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+</body>
+</html>
+

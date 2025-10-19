@@ -1,0 +1,160 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gel-Glass Archipelago (Monaco + Arial Narrow)</title>
+<style>
+:root {
+  --color-bg: #F6FAFB;        /* Seafoam White */
+  --color-surface: #CDE8F4;   /* Dew Aqua */
+  --color-primary: #A8E7B0;   /* Appletini */
+  --color-secondary: #8CC9F8; /* Azure Pop */
+  --color-highlight: #FFFFFF; /* Glasslight */
+  --color-text: #68A9E8;      /* Light Blue Text */
+  --color-line: #A78BFF;      /* Vibrant Mist Violet */
+}
+
+/* === Layout === */
+body {
+  margin: 0;
+  font-family: "Monaco", monospace;
+  background: radial-gradient(circle at 50% 40%, #F6FAFB 0%, #CDE8F4 100%);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 2rem;
+  min-height: 100vh;
+  text-shadow: 0 0 4px rgba(104,169,232,0.2);
+}
+
+/* === Title === */
+h1 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 2.4rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: var(--color-text);
+  margin-bottom: 2.4rem;
+}
+
+/* === Swatches === */
+.palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 18px;
+  max-width: 760px;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.swatch {
+  background: radial-gradient(circle at center, var(--color) 0%, var(--color-highlight) 140%);
+  border-radius: 30px;
+  padding: 46px 10px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  box-shadow: 0 6px 24px rgba(62,107,135,0.10);
+  backdrop-filter: blur(26px) saturate(150%);
+  border: 1px solid rgba(255,255,255,0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.swatch:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 28px rgba(62,107,135,0.16);
+}
+
+/* === Card === */
+.card {
+  background: radial-gradient(circle at center, rgba(205,232,244,0.7) 0%, rgba(246,250,251,0.5) 100%);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 10px 36px rgba(62,107,135,0.12);
+  border-radius: 40px;
+  padding: 2.8rem;
+  max-width: 540px;
+  text-align: center;
+  backdrop-filter: blur(34px) saturate(150%);
+  transition: background 0.5s ease, transform 0.4s ease;
+}
+.card:hover {
+  background: radial-gradient(circle at center, rgba(246,250,251,0.65) 0%, rgba(205,232,244,0.6) 100%);
+  transform: translateY(-4px);
+}
+
+.card h2 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  color: var(--color-text);
+  font-size: 1.4rem;
+  margin-top: 0;
+}
+
+.card p {
+  font-family: "Monaco", monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text);
+}
+
+/* === Button === */
+button {
+  margin-top: 1.2rem;
+  background: radial-gradient(circle at center, var(--color-primary) 0%, var(--color-secondary) 140%);
+  border: none;
+  color: #ffffff;
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  border-radius: 20px;
+  padding: 0.9rem 1.9rem;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(140,201,248,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 26px rgba(140,201,248,0.45);
+}
+
+/* === Swatch IDs === */
+#bg     { --color: var(--color-bg); }
+#surf   { --color: var(--color-surface); }
+#prim   { --color: var(--color-primary); }
+#sec    { --color: var(--color-secondary); }
+#hl     { --color: var(--color-highlight); }
+#text   { --color: var(--color-text); color: #fff; }
+#line   { --color: var(--color-line); color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>Gel-Glass Archipelago</h1>
+
+<div class="palette">
+  <div id="bg" class="swatch">Seafoam White<br>#F6FAFB</div>
+  <div id="surf" class="swatch">Dew Aqua<br>#CDE8F4</div>
+  <div id="prim" class="swatch">Appletini<br>#A8E7B0</div>
+  <div id="sec" class="swatch">Azure Pop<br>#8CC9F8</div>
+  <div id="hl" class="swatch">Glasslight<br>#FFFFFF</div>
+  <div id="text" class="swatch">Aero Blue-Gray<br>#68A9E8</div>
+  <div id="line" class="swatch">Mist Violet<br>#A78BFF</div>
+</div>
+
+<div class="card">
+  <h2>Monaco + Arial Narrow Text</h2>
+  <p>
+    Title text uses <b>Arial Narrow</b> for that clean 2000s glass UI look.<br>
+    Body text uses <b>Monaco</b> for crisp, technical readability.<br><br>
+    Mist Violet is now brighter and more alive — a soft periwinkle accent
+    that pairs perfectly with the aqua base.
+  </p>
+  <button>Try Me</button>
+</div>
+
+</body>
+</html>
+

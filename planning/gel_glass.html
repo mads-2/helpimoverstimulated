@@ -1,0 +1,148 @@
+v<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gel-Glass Archipelago Palette</title>
+<style>
+:root {
+  --color-bg: #F6FAFB;        /* Seafoam White */
+  --color-surface: #CDE8F4;   /* Dew Aqua */
+  --color-primary: #A8E7B0;   /* Appletini */
+  --color-secondary: #8CC9F8; /* Azure Pop */
+  --color-highlight: #FFFFFF; /* Glasslight */
+  --color-text: #3E6B87;      /* Aero Blue-Gray */
+  --color-line: #AFA9C9;      /* Mist Violet */
+}
+
+body {
+  margin: 0;
+  font-family: "Nunito", "Inter", sans-serif;
+  background: linear-gradient(180deg, #F6FAFB 0%, #CDE8F4 90%);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3rem 2rem;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Title */
+h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  text-align: center;
+  background: linear-gradient(90deg, #8CC9F8, #A8E7B0);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 2rem;
+}
+
+/* Swatches */
+.palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 16px;
+  max-width: 760px;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.swatch {
+  background: linear-gradient(145deg, var(--color) 0%, rgba(255,255,255,0.7) 120%);
+  border-radius: 26px;
+  padding: 44px 10px;
+  text-align: center;
+  font-weight: 500;
+  color: var(--color-text);
+  box-shadow: 0 8px 28px rgba(62,107,135,0.1);
+  backdrop-filter: blur(26px) saturate(160%);
+  border: 1px solid rgba(255,255,255,0.45);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.swatch:hover {
+  transform: scale(1.04);
+  box-shadow: 0 10px 36px rgba(62,107,135,0.15);
+}
+
+/* Card */
+.card {
+  background: linear-gradient(165deg, rgba(205,232,244,0.7), rgba(246,250,251,0.5));
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 12px 40px rgba(62,107,135,0.15);
+  border-radius: 36px;
+  padding: 2.8rem;
+  max-width: 520px;
+  text-align: center;
+  backdrop-filter: blur(34px) saturate(160%);
+  transition: background 0.5s ease, transform 0.4s ease;
+}
+.card:hover {
+  background: linear-gradient(165deg, rgba(246,250,251,0.65), rgba(205,232,244,0.6));
+  transform: translateY(-6px);
+}
+
+.card h2 {
+  margin-top: 0;
+  background: linear-gradient(90deg, #A8E7B0, #8CC9F8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Button */
+button {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 16px;
+  padding: 0.8rem 1.6rem;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(140,201,248,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 26px rgba(140,201,248,0.5);
+}
+
+/* Assign colors to swatches */
+#bg     { --color: var(--color-bg); }
+#surf   { --color: var(--color-surface); }
+#prim   { --color: var(--color-primary); }
+#sec    { --color: var(--color-secondary); }
+#hl     { --color: var(--color-highlight); }
+#text   { --color: var(--color-text); color: #fff; }
+#line   { --color: var(--color-line); color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>🍏 Gel-Glass Archipelago Palette</h1>
+
+<div class="palette">
+  <div id="bg" class="swatch">Seafoam White<br>#F6FAFB</div>
+  <div id="surf" class="swatch">Dew Aqua<br>#CDE8F4</div>
+  <div id="prim" class="swatch">Appletini<br>#A8E7B0</div>
+  <div id="sec" class="swatch">Azure Pop<br>#8CC9F8</div>
+  <div id="hl" class="swatch">Glasslight<br>#FFFFFF</div>
+  <div id="text" class="swatch">Aero Blue-Gray<br>#3E6B87</div>
+  <div id="line" class="swatch">Mist Violet<br>#AFA9C9</div>
+</div>
+
+<div class="card">
+  <h2>Glassy Archipelago Card</h2>
+  <p>
+    A direct visual echo of your screenshots —  
+    cool air, bright mint, and clean glass whites blending under daylight.  
+    Everything glows but never glares.
+  </p>
+  <button>Try Me</button>
+</div>
+
+</body>
+</html>
+

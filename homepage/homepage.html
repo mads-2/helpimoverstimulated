@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Help! I'm overstimulated.</title>
+<style>
+:root {
+  --color-bg:#bfc4c6;
+  --color-surface:#aeb5b8;
+  --color-primary:#9be4b0;
+  --color-secondary:#8cc9f8;
+  --color-text:#4b91c9;
+}
+html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;}
+body{
+  background:radial-gradient(circle at 50% 45%,var(--color-bg),var(--color-surface));
+  font-family:Arial, sans-serif;
+  color:var(--color-text);
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
+body::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 30%30%,rgba(255,255,255,.15),transparent 70%),
+             radial-gradient(circle at 80%70%,rgba(180,255,200,.08),transparent 70%);
+  filter:blur(45px);opacity:.55;z-index:0;
+}
+.texture{
+  position:absolute;inset:0;
+  background-image:url('https://transparenttextures.com/patterns/white-paper.png');
+  opacity:.03;mix-blend-mode:overlay;pointer-events:none;z-index:1;
+}
+
+/* bubbles */
+#bubbles{
+  position:fixed; inset:0; overflow:hidden; z-index:2;
+}
+.bubble{
+  position:absolute;
+  border-radius:50%;
+  background: radial-gradient(circle at 35%35%,
+    rgba(255,255,255,0.8) 0%,
+    rgba(255,255,255,0.35) 30%,
+    rgba(255,255,255,0.1) 65%,
+    transparent 100%);
+  box-shadow:
+    0 0 12px rgba(255,255,255,0.45),
+    0 0 22px currentColor,
+    0 0 44px currentColor;
+  pointer-events:none;
+  opacity:0;
+  will-change:transform,opacity;
+  transition:opacity .25s ease-out;
+}
+
+/* title bar */
+.title-bar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 0 0.5rem;
+  text-align: center;
+  z-index: 20;
+}
+.title-bg {
+  display: inline-block;
+  background: transparent;
+  padding: 0.4rem 1rem;
+  border-radius: 12px;
+}
+.title-bar h1{
+  font-family:"Arial Narrow", Arial, sans-serif;
+  font-weight:700;
+  font-size:clamp(1.5rem, 5vw, 2.2rem);
+  text-shadow:0 2px 6px rgba(255,255,255,.7);
+  margin:0;
+  text-transform:none;
+  cursor:default;
+  max-width:90vw;
+  word-wrap:break-word;
+}
+.title-bar h1 em {
+  font-style: italic;
+}
+
+/* button under title */
+.button-container {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+}
+.box-button {
+  position: relative;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  font-size: clamp(0.9rem, 3.5vw, 1rem);
+  font-weight: 500;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(75,145,201,0.9), rgba(46,90,150,0.9));
+  border: none;
+  cursor: pointer;
+  padding: 0.9rem 1.8rem;
+  border-radius: 10px;
+  backdrop-filter: blur(14px) saturate(180%);
+  box-shadow:
+    0 6px 18px rgba(75,145,201,0.35),
+    inset 0 0 0 rgba(255,255,255,0.1);
+  transform: translateY(0);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.6s ease;
+}
+.box-button:hover {
+  box-shadow:
+    0 8px 24px rgba(75,145,201,0.55),
+    inset 0 0 8px rgba(255,255,255,0.25);
+}
+.box-button:active {
+  transform: translateY(4px) scale(0.97);
+  box-shadow:
+    0 2px 10px rgba(75,145,201,0.4),
+    inset 0 4px 8px rgba(255,255,255,0.15);
+  transition:
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.box-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  pointer-events: none;
+}
+.box-button:active::after {
+  opacity: 1;
+  transform: scale(1.3);
+}
+
+/* mission overlay */
+.mission-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px) saturate(160%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 10;
+}
+.mission-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* mission content box */
+.mission-content {
+  position: relative;
+  background: rgba(255,255,255,0.6);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: inset 0 2px 4px rgba(255,255,255,.3),
+              0 4px 14px rgba(50,60,70,.15);
+  max-width: 800px;
+  width: 90%;
+  padding: 1.5rem;
+  text-align: left;
+  font-size: clamp(0.9rem, 3vw, 1rem);
+  line-height: 1.9;
+}
+@media (max-width: 600px) {
+  .mission-content {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+/* close button (X) */
+.close-btn {
+  position: absolute;
+  top: 48px;
+  right: 15px;
+  font-family: Arial, sans-serif;
+  font-size: 1rem;
+  color: #4b91c9;
+  background: white;
+  border: 2px solid #4b91c9;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(75,145,201,0.3);
+  transition: box-shadow 0.2s ease;
+}
+.close-btn:hover,
+.close-btn:active {
+  box-shadow: 0 0 15px rgba(75,145,201,0.7);
+}
+
+/* cursor (desktop only) */
+@media (pointer: fine) {
+  .cursor{
+    position:fixed;top:0;left:0;width:28px;height:28px;border-radius:50%;
+    background:radial-gradient(circle at center,var(--color-primary),var(--color-secondary));
+    box-shadow:
+      0 0 18px rgba(150,200,255,0.5),
+      0 0 40px rgba(150,200,255,0.25),
+      0 0 80px rgba(150,200,255,0.18);
+    filter:blur(2px);
+    pointer-events:none;mix-blend-mode:screen;opacity:.85;
+    transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;
+    z-index:9999;
+  }
+}
+</style>
+</head>
+<body>
+<div class="texture"></div>
+<div id="bubbles"></div>
+
+<!-- Fixed Title -->
+<div class="title-bar">
+  <div class="title-bg">
+    <h1><em>Help!</em> I'm overstimulated.</h1>
+  </div>
+  <div class="button-container">
+    <button class="box-button" id="toggleButton">What is this site?</button>
+  </div>
+</div>
+
+<!-- Mission Overlay -->
+<div class="mission-overlay" id="missionOverlay">
+  <div class="mission-content">
+    <button class="close-btn" id="closeButton">X</button>
+    <p>
+This site is designed to help <strong>ground</strong> you when you are <strong>overstimulated</strong>.<br>
+If you think the games are <strong>boring</strong>, good. They are designed to be <strong>calming</strong>, not <strong>addictive</strong>.<br>
+This site is inspired by the <strong>Frutiger Aero aesthetic</strong>.<br>
+This site will stay <strong>ad-free</strong>, <strong>login-free</strong>, and <strong>safe for all ages</strong>.
+    </p>
+  </div>
+</div>
+
+<script>
+/* === Glowing cursor (only if desktop) === */
+if (window.matchMedia('(pointer: fine)').matches) {
+  const cursor = document.createElement("div");
+  cursor.classList.add("cursor");
+  document.body.appendChild(cursor);
+  let targetX = innerWidth/2, targetY = innerHeight/2;
+  let currentX = targetX, currentY = targetY;
+  addEventListener("mousemove", e => { targetX = e.clientX; targetY = e.clientY; });
+  function animateCursor(){
+    const s=0.28;
+    currentX += (targetX-currentX)*s;
+    currentY += (targetY-currentY)*s;
+    cursor.style.left = currentX+"px";
+    cursor.style.top = currentY+"px";
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+}
+
+/* === Mission overlay toggle === */
+const missionOverlay = document.getElementById('missionOverlay');
+const toggleButton = document.getElementById('toggleButton');
+const closeButton = document.getElementById('closeButton');
+
+function openMission() { missionOverlay.classList.add('active'); }
+function closeMission() { missionOverlay.classList.remove('active'); }
+
+toggleButton.addEventListener('click', e => { e.stopPropagation(); openMission(); });
+closeButton.addEventListener('click', e => { e.stopPropagation(); closeMission(); });
+document.addEventListener('click', e => {
+  if (!missionOverlay.contains(e.target) && e.target !== toggleButton) closeMission();
+});
+
+/* === Bubbles === */
+const NUM=24, bubbles=[], layer=document.getElementById("bubbles");
+let W=innerWidth, H=innerHeight;
+const colors = [
+  "#F89EAF", // muted red-pink
+  "#FFB984", // muted orange
+  "#FFF4B8", // muted yellow
+  "#9BE4B0", // mint
+  "#8CC9F8", // light blue
+  "#B6B4F0", // lavender
+  "#FFB3C1"  // pink
+];
+function createBubble(){
+  const el=document.createElement("div");
+  el.className="bubble";
+  const r=30+Math.random()*40;
+  el.style.width=el.style.height=r+"px";
+  el.style.color = colors[Math.floor(Math.random()*colors.length)];
+  const b={el,r:r/2,x:Math.random()*W,y:H*Math.random(),
+           vx:(Math.random()-.5)*0.8,vy:-0.45-Math.random()*0.35,popped:false};
+  layer.appendChild(el);bubbles.push(b);
+}
+for(let i=0;i<NUM;i++) createBubble();
+
+addEventListener('pointerdown', e=>{
+  const x=e.clientX,y=e.clientY;
+  const el=document.elementFromPoint(x,y);
+  if (el && (el.closest('.box-button') || el.closest('.mission-content'))) return;
+  for(const b of bubbles){
+    const dx=x-b.x, dy=y-b.y;
+    if(dx*dx+dy*dy<=b.r*b.r && !b.popped){
+      b.popped=true; b.el.style.opacity=0;
+      setTimeout(()=>{
+        b.x=Math.random()*W; b.y=H+80;
+        b.vy=-0.45-Math.random()*0.35;
+        b.popped=false; b.el.style.opacity=0.25;
+      },250);
+      break;
+    }
+  }
+});
+
+function animateBubbles(){
+  const t=Date.now();
+  for(const b of bubbles){
+    if(!b.popped){
+      b.x+=b.vx;b.y+=b.vy;
+      if(b.x<b.r||b.x>W-b.r) b.vx*=-1;
+      b.vx+=Math.sin(t/4000+b.r)*0.0003;
+      if(b.y<H*0.9&&b.y>0)b.el.style.opacity=0.9;
+      if(b.y<180)b.el.style.opacity=Math.max(0,b.y/180);
+    }
+    if(b.y<-b.r){
+      b.y=H+60;
+      b.x=Math.random()*W;
+      b.vy=-0.45-Math.random()*0.35;
+      b.el.style.opacity=0.2;
+    }
+    b.el.style.transform=`translate3d(${b.x-b.r}px,${b.y-b.r}px,0)`;
+  }
+  requestAnimationFrame(animateBubbles);
+}
+animateBubbles();
+
+addEventListener('resize', ()=>{W=innerWidth;H=innerHeight;});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pear Milk Glass Palette</title>
+<style>
+/* === Base Palette === */
+:root {
+  --color-bg: #F2F5F0;        /* Pear Milk */
+  --color-surface: #E6EEF4;   /* Blue Dew */
+  --color-primary: #A8C7A1;   /* Sage Leaf */
+  --color-secondary: #A7C4E0; /* Gentle Sky */
+  --color-text: #405A77;      /* Mist Blue (text) */
+  --color-line: #6B5A75;      /* Plum Veil */
+  --color-highlight: color-mix(in srgb, var(--color-bg) 80%, white);
+}
+
+/* === Page Setup === */
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Nunito", "Inter", sans-serif;
+  background: radial-gradient(circle at 40% 20%, #F2F5F0 0%, #E6EEF4 80%);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4rem 2rem;
+  backdrop-filter: blur(20px);
+}
+
+/* === Header === */
+h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  background: linear-gradient(90deg, #A7C4E0, #A8C7A1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 2rem;
+}
+
+/* === Swatches === */
+.palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 14px;
+  width: 100%;
+  max-width: 680px;
+  margin-bottom: 3rem;
+}
+
+.swatch {
+  background: var(--color);
+  border-radius: 20px;
+  padding: 40px 10px;
+  text-align: center;
+  font-weight: 500;
+  color: var(--color-text);
+  box-shadow: 0 4px 16px rgba(64, 90, 119, 0.08);
+  backdrop-filter: blur(20px) saturate(130%);
+  border: 1px solid rgba(255,255,255,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.swatch:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(64, 90, 119, 0.15);
+}
+
+/* === Card Example === */
+.card {
+  background: rgba(230, 238, 244, 0.5);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 8px 30px rgba(64, 90, 119, 0.15);
+  border-radius: 28px;
+  padding: 2.5rem;
+  max-width: 500px;
+  text-align: center;
+  backdrop-filter: blur(25px) saturate(130%);
+  transition: background 0.5s ease, transform 0.4s ease;
+}
+.card:hover {
+  background: rgba(242, 245, 240, 0.55);
+  transform: translateY(-4px);
+}
+
+.card h2 {
+  margin-top: 0;
+  background: linear-gradient(90deg, #A7C4E0, #A8C7A1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* === Button === */
+button {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 0.8rem 1.6rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(167,196,224,0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(167,196,224,0.45);
+}
+
+/* === Swatch variable setup === */
+#bg     { --color: var(--color-bg); }
+#surf   { --color: var(--color-surface); }
+#prim   { --color: var(--color-primary); }
+#sec    { --color: var(--color-secondary); }
+#hl     { --color: var(--color-highlight); }
+#text   { --color: var(--color-text); color: #fff; }
+#line   { --color: var(--color-line); color: #fff; }
+
+</style>
+</head>
+<body>
+
+<h1>🍐 Pear Milk Glass Palette</h1>
+
+<div class="palette">
+  <div id="bg" class="swatch">Pear Milk<br>#F2F5F0</div>
+  <div id="surf" class="swatch">Blue Dew<br>#E6EEF4</div>
+  <div id="prim" class="swatch">Sage Leaf<br>#A8C7A1</div>
+  <div id="sec" class="swatch">Gentle Sky<br>#A7C4E0</div>
+  <div id="hl" class="swatch">Highlight<br>(auto-tinted)</div>
+  <div id="text" class="swatch">Mist Blue<br>#405A77</div>
+  <div id="line" class="swatch">Plum Veil<br>#6B5A75</div>
+</div>
+
+<div class="card">
+  <h2>Glass Card Example</h2>
+  <p>
+    This card floats softly above a <strong>Pear Milk</strong> background,  
+    using a translucent <strong>Blue Dew</strong> surface. The button reflects  
+    both <strong>Sage Leaf</strong> and <strong>Gentle Sky</strong> gradients  
+    for an airy, fruity-aero look.
+  </p>
+  <button>Try Me</button>
+</div>
+
+</body>
+</html>
+

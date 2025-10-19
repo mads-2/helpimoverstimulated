@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Gel-Glass Archipelago — Wii Green Edition</title>
+<style>
+:root {
+  --color-bg: #f1f4f5;        /* Soft gray-white background */
+  --color-surface: #d3e7ef;   /* Light blue-gray surface */
+  --color-primary: #9be4b0;   /* Leaf-mint accent */
+  --color-secondary: #8cc9f8; /* Sky-blue accent */
+  --color-highlight: #ffffff;
+  --color-text: #4b91c9;      /* Aero blue text */
+  --color-accent: #a2e6c8;    /* Extra green accent */
+}
+
+/* === Base layout === */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, var(--color-bg) 0%, var(--color-surface) 100%);
+  font-family: "Monaco", monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === Glow wash === */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 70%),
+    radial-gradient(circle at 80% 70%, rgba(150,255,200,0.15), transparent 70%);
+  filter: blur(45px);
+  opacity: 0.8;
+}
+
+/* === Floating bright bubbles === */
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.75) 25%,
+    rgba(255, 255, 255, 0.25) 70%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 25px rgba(255, 255, 255, 0.6),
+    0 0 40px rgba(180, 240, 255, 0.4);
+  filter: blur(1.5px) brightness(1.15);
+  animation: rise 20s linear infinite, bubbleShine 4s ease-in-out infinite;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+@keyframes rise {
+  0% { transform: translateY(100vh) scale(0.6); opacity: 0.6; }
+  100% { transform: translateY(-20vh) scale(1); opacity: 0.9; }
+}
+@keyframes bubbleShine {
+  0%, 100% { filter: blur(1.5px) brightness(1.1); }
+  50% { filter: blur(1.5px) brightness(1.4); }
+}
+
+/* === Screen container === */
+.screen {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+}
+
+/* === Title === */
+h1 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--color-text);
+  text-shadow: 0 1px 4px rgba(255,255,255,0.8);
+  margin: 0;
+}
+
+/* === Palette === */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 0 1rem;
+  max-width: 90%;
+}
+.swatch {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: radial-gradient(circle at center, var(--color) 0%, rgba(255,255,255,0.85) 130%);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 3px 10px rgba(62,107,135,0.12);
+  backdrop-filter: blur(14px) saturate(150%);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.swatch:hover {
+  transform: scale(1.06);
+  box-shadow: 0 5px 18px rgba(62,107,135,0.2);
+}
+
+/* === Wii Panel === */
+.panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(220,240,230,0.6));
+  border: 2px solid rgba(255,255,255,0.8);
+  border-radius: 32px;
+  box-shadow: inset 0 1px 4px rgba(255,255,255,0.9),
+              0 4px 18px rgba(75,145,201,0.15);
+  backdrop-filter: blur(20px) saturate(160%);
+  padding: 2rem;
+  max-width: 420px;
+  width: 80%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.panel:hover {
+  transform: scale(1.02);
+  box-shadow: inset 0 1px 4px rgba(255,255,255,0.9),
+              0 6px 24px rgba(75,145,201,0.25);
+}
+
+.panel h2 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 0;
+  text-shadow: 0 0 5px rgba(255,255,255,0.6);
+}
+
+.panel p {
+  font-family: "Monaco", monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+/* === Gradient Button === */
+button {
+  margin-top: 1rem;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 16px;
+  color: #fff;
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.8rem 1.6rem;
+  box-shadow: 0 4px 16px rgba(137,206,255,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(137,206,255,0.5);
+}
+
+/* === Gradient Cursor === */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--color-primary), var(--color-secondary));
+  box-shadow: 0 0 10px rgba(150,200,255,0.6);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+  z-index: 9999;
+}
+button:hover ~ .cursor {
+  width: 36px;
+  height: 36px;
+  opacity: 1;
+}
+
+/* === Color mapping === */
+#bg     { --color: var(--color-bg); }
+#surf   { --color: var(--color-surface); }
+#prim   { --color: var(--color-primary); }
+#sec    { --color: var(--color-secondary); }
+#acc    { --color: var(--color-accent); }
+
+@media (max-width: 768px) {
+  .bubble { display: none; }
+  .panel { padding: 1.4rem; border-radius: 24px; }
+  .swatch { width: 50px; height: 50px; border-radius: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div id="bubbles"></div>
+
+<div class="screen">
+  <h1>Gel-Glass Archipelago</h1>
+
+  <div class="palette">
+    <div id="bg" class="swatch"></div>
+    <div id="surf" class="swatch"></div>
+    <div id="prim" class="swatch"></div>
+    <div id="sec" class="swatch"></div>
+    <div id="acc" class="swatch"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Wii Bright Edition</h2>
+    <p>
+      Brighter bubbles, glossier highlights,<br>
+      and the calm, glassy mint-blue glow<br>
+      of a vintage Wii channel.
+    </p>
+    <button>Start</button>
+  </div>
+</div>
+
+<script>
+/* === Gradient Cursor === */
+const cursor = document.createElement("div");
+cursor.classList.add("cursor");
+document.body.appendChild(cursor);
+
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
+document.addEventListener("mousedown", () => {
+  cursor.style.transform = "translate(-50%, -50%) scale(0.8)";
+  cursor.style.opacity = "0.6";
+});
+document.addEventListener("mouseup", () => {
+  cursor.style.transform = "translate(-50%, -50%) scale(1)";
+  cursor.style.opacity = "0.8";
+});
+
+/* === Floating Bubbles === */
+const bubbleLayer = document.getElementById("bubbles");
+for (let i = 0; i < 18; i++) {
+  const bubble = document.createElement("div");
+  bubble.classList.add("bubble");
+  const size = Math.random() * 60 + 20;
+  bubble.style.width = `${size}px`;
+  bubble.style.height = `${size}px`;
+  bubble.style.left = `${Math.random() * 100}%`;
+  bubble.style.animationDelay = `${Math.random() * 10}s`;
+  bubbleLayer.appendChild(bubble);
+}
+</script>
+</body>
+</html>
+

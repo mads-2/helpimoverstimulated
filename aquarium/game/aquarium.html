@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Aquarium</title>
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* 🌊 Background */
+#aquarium {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: url("../cropped/background.jpg") center/cover no-repeat;
+  overflow: hidden;
+}
+
+/* 🪸 Bottom objects (default: full size) */
+.bottom-object {
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  transform-origin: bottom center;
+}
+
+/* 🐠 Fish (default size) */
+.fish {
+  position: absolute;
+  height: 25vh;
+  width: auto;
+  z-index: 5;
+}
+.fish.jelly { height: 35vh; }
+.fish.left { transform: scaleX(-1); }
+</style>
+</head>
+<body>
+<div id="aquarium"></div>
+
+<script>
+function rand(min, max){ return Math.random() * (max - min) + min; }
+
+/* === Detect if the device is mobile === */
+function isMobileDevice() {
+  return (
+    /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (window.innerWidth < 900 && 'ontouchstart' in window)
+  );
+}
+
+/* === Base spawn zones (desktop defaults) === */
+const baseZones = {
+  leftSeaweed:  { xMin: 5,  xMax: 28, yMin: 25, yMax: 38 },
+  leftAnemone:  { xMin: 10, xMax: 25, yMin: 5,  yMax: 18 },
+  crab:         { xMin: 42, xMax: 58, yMin: 10, yMax: 25 },
+  middleShells: { xMin: 40, xMax: 60, yMin: 2,  yMax: 10 },
+  rightSeaweed: { xMin: 68, xMax: 92, yMin: 25, yMax: 38 },
+  rightAnemone: { xMin: 70, xMax: 90, yMin: 5,  yMax: 18 }
+};
+
+/* === Get zone depending on device === */
+function getZones() {
+  if (!isMobileDevice()) return baseZones;
+
+  // 📱 Mobile — raise crab, shells, and anemone a bit
+  return {
+    leftSeaweed:  baseZones.leftSeaweed,
+    leftAnemone:  { ...baseZones.leftAnemone, yMin: baseZones.leftAnemone.yMin + 6, yMax: baseZones.leftAnemone.yMax + 6 },
+    crab:         { ...baseZones.crab,         yMin: baseZones.crab.yMin + 8,         yMax: baseZones.crab.yMax + 8 },
+    middleShells: { ...baseZones.middleShells, yMin: baseZones.middleShells.yMin + 7, yMax: baseZones.middleShells.yMax + 7 },
+    rightSeaweed: baseZones.rightSeaweed,
+    rightAnemone: { ...baseZones.rightAnemone, yMin: baseZones.rightAnemone.yMin + 6, yMax: baseZones.rightAnemone.yMax + 6 }
+  };
+}
+
+/* === Place bottom objects === */
+async function placeObject(src, zone, sizeVHRange, tiltRange, invertChance=0.5) {
+  return new Promise(resolve=>{
+    const aquarium=document.getElementById("aquarium");
+    const img=document.createElement("img");
+    img.src=src;
+    img.classList.add("bottom-object");
+    let sizeVH=rand(sizeVHRange[0],sizeVHRange[1]);
+
+    // 🧩 Shrink on mobile
+    if (isMobileDevice()) {
+      sizeVH *= 0.5;
+    }
+
+    img.style.height=`${sizeVH}vh`;
+
+    img.onload=()=>{
+      const rect=aquarium.getBoundingClientRect();
+      const pxH=(sizeVH/100)*rect.height;
+      const pxW=img.naturalWidth*(pxH/img.naturalHeight);
+
+      const xMin=rect.width*zone.xMin/100;
+      const xMax=rect.width*zone.xMax/100;
+      const yMin=rect.height*zone.yMin/100;
+      const yMax=rect.height*zone.yMax/100;
+
+      const x=rand(xMin,xMax-pxW);
+      const y=rand(yMin,yMax-pxH*0.4);
+      img.style.left=`${x}px`;
+      img.style.bottom=`${y}px`;
+
+      const tilt=rand(tiltRange[0],tiltRange[1]);
+      const invert=Math.random()<invertChance?-1:1;
+      img.style.transform=`scaleX(${invert}) rotate(${tilt}deg)`;
+
+      aquarium.appendChild(img);
+      resolve();
+    };
+  });
+}
+
+/* === Add bottom objects === */
+async function addBottomObjects() {
+  const base="../cropped/";
+  const zones=getZones();
+
+  // Left group
+  await placeObject(base+"bottom_seaweed.png", zones.leftSeaweed, [40,47], [-8,8]);
+  await placeObject(base+"bottom_anemone.png", zones.leftAnemone, [36,43], [-6,6]);
+
+  // Crab and shells
+  await placeObject(base+"bottom_crab.png", zones.crab, [35,40], [0,0]);
+  await placeObject(base+"bottom_shell.png", zones.middleShells, [25,30], [-6,6]);
+  await placeObject(base+"bottom_shell.png", zones.middleShells, [25,30], [-6,6]);
+
+  // Right group
+  await placeObject(base+"bottom_seaweed.png", zones.rightSeaweed, [40,47], [-8,8]);
+  await placeObject(base+"bottom_anemone.png", zones.rightAnemone, [36,43], [-6,6]);
+}
+
+/* === 🐠 Fish === */
+function spawnFish(num=10){
+  const aquarium=document.getElementById('aquarium');
+  const width=aquarium.clientWidth;
+  const height=aquarium.clientHeight*0.75;
+  const fishImages=[
+    "../cropped/fish_blue_beta.png",
+    "../cropped/fish_red_beta.png",
+    "../cropped/fish_clown.png",
+    "../cropped/fish_goldfish.png",
+    "../cropped/fish_yellow_tang.png",
+    "../cropped/fish_seahorse.png",
+    "../cropped/fish_jelly.png"
+  ];
+
+  for(let i=0;i<num;i++){
+    const img=document.createElement("img");
+    const src=fishImages[i%fishImages.length];
+    img.src=src;
+    img.classList.add("fish");
+
+    // 🧩 Shrink fish 30% on mobile
+    if (isMobileDevice()) {
+      const currentHeight = src.includes("fish_jelly") ? 35 : 25;
+      img.style.height = `${currentHeight * 0.7}vh`;
+    } else {
+      if(src.includes("fish_jelly")) img.classList.add("jelly");
+    }
+
+    const x=rand(0,width-200);
+    const y=rand(0,height-150);
+    img.style.left=`${x}px`;
+    img.style.top=`${y}px`;
+
+    if(Math.random()<0.5) img.classList.add("left");
+    aquarium.appendChild(img);
+  }
+}
+
+/* === Initialize === */
+(async()=>{
+  await addBottomObjects();
+  spawnFish();
+})();
+</script>
+</body>
+</html>
+

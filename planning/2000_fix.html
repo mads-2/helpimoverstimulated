@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Gel-Glass Archipelago — Calm Skeuomorphic</title>
+<style>
+:root {
+  --color-bg: #f1f4f5;
+  --color-surface: #d3e7ef;
+  --color-primary: #9be4b0;
+  --color-secondary: #8cc9f8;
+  --color-highlight: #ffffff;
+  --color-text: #4b91c9;
+  --color-accent: #a2e6c8;
+}
+
+/* === Calm fallback before anything loads === */
+html {
+  background-color: #eaf1f2; /* no bright flash */
+}
+
+/* === Base layout === */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, var(--color-bg) 0%, var(--color-surface) 100%);
+  font-family: "Monaco", monospace;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === Ambient glow fade-in === */
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.5), transparent 70%),
+    radial-gradient(circle at 80% 70%, rgba(150,255,200,0.15), transparent 70%);
+  filter: blur(45px);
+  opacity: 0;
+  animation: glowFade 1.8s ease forwards 0.8s;
+  z-index: 0;
+}
+@keyframes glowFade { to { opacity: 0.8; } }
+
+/* === Subtle paper texture overlay === */
+.texture {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://transparenttextures.com/patterns/white-paper.png');
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* === Bright shiny bubbles, delayed start === */
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(255,255,255,0.95) 0%,
+    rgba(255,255,255,0.75) 25%,
+    rgba(255,255,255,0.25) 70%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 25px rgba(255,255,255,0.6),
+    0 0 40px rgba(180,240,255,0.4);
+  filter: blur(1.5px) brightness(1.15);
+  animation: rise 20s linear infinite, bubbleShine 4s ease-in-out infinite;
+  animation-delay: 1.5s, 1.5s; /* wait for calm load */
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes rise {
+  0%   { transform: translateY(100vh) scale(0.6); opacity: 0.6; }
+  100% { transform: translateY(-20vh) scale(1);   opacity: 0.9; }
+}
+@keyframes bubbleShine {
+  0%,100% { filter: blur(1.5px) brightness(1.1); }
+  50%     { filter: blur(1.5px) brightness(1.4); }
+}
+
+/* === Foreground fades in separately === */
+.screen {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+  opacity: 0;
+  animation: screenFade 1.8s ease forwards 0.5s;
+}
+@keyframes screenFade { to { opacity: 1; } }
+
+/* === Title === */
+h1 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  color: var(--color-text);
+  text-shadow: 0 1px 4px rgba(255,255,255,0.8);
+  margin: 0;
+}
+
+/* === Palette === */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 0 1rem;
+  max-width: 90%;
+}
+.swatch {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: radial-gradient(circle at center, var(--color) 0%, rgba(255,255,255,0.85) 130%);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 3px 10px rgba(62,107,135,0.12);
+  backdrop-filter: blur(14px) saturate(150%);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.swatch:hover {
+  transform: scale(1.06);
+  box-shadow: 0 5px 18px rgba(62,107,135,0.2);
+}
+
+/* === Skeuomorphic panel === */
+.panel {
+  background: linear-gradient(180deg, #fefefe 0%, #e7f5f0 100%);
+  border-radius: 40px;
+  border: 2px solid rgba(255,255,255,0.85);
+  box-shadow:
+    inset 0 3px 6px rgba(255,255,255,0.7),
+    inset 0 -4px 6px rgba(0,0,0,0.08),
+    0 6px 20px rgba(80,120,160,0.20);
+  padding: 2rem;
+  max-width: 420px;
+  width: 80%;
+  backdrop-filter: blur(20px) saturate(180%);
+  transition: transform 0.25s ease, box-shadow 0.3s ease;
+}
+.panel:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 3px 6px rgba(255,255,255,0.7),
+    inset 0 -4px 6px rgba(0,0,0,0.08),
+    0 12px 28px rgba(80,120,160,0.25);
+}
+.panel h2 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-top: 0;
+  text-shadow: 0 0 5px rgba(255,255,255,0.6);
+}
+.panel p {
+  font-family: "Monaco", monospace;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text);
+}
+
+/* === Skeuomorphic button === */
+button {
+  position: relative;
+  background: linear-gradient(180deg, #b6f0c5 0%, #7ad1f0 100%);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 18px;
+  color: #ffffff;
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.8rem 1.6rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.6),
+    inset 0 -2px 4px rgba(0,0,0,0.15),
+    0 6px 16px rgba(100,180,200,0.40);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+button:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.6),
+    inset 0 -2px 4px rgba(0,0,0,0.15),
+    0 10px 20px rgba(100,180,200,0.50);
+}
+button:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 3px 5px rgba(0,0,0,0.25),
+    inset 0 -1px 2px rgba(255,255,255,0.5);
+}
+
+/* === Cursor === */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--color-primary), var(--color-secondary));
+  box-shadow: 0 0 10px rgba(150,200,255,0.6);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+  z-index: 9999;
+}
+button:hover ~ .cursor {
+  width: 36px;
+  height: 36px;
+  opacity: 1;
+}
+
+/* === Palette mapping === */
+#bg     { --color: var(--color-bg); }
+#surf   { --color: var(--color-surface); }
+#prim   { --color: var(--color-primary); }
+#sec    { --color: var(--color-secondary); }
+#acc    { --color: var(--color-accent); }
+
+@media (max-width: 768px) {
+  .bubble { display: none; }
+  .panel  { padding: 1.4rem; border-radius: 24px; }
+  .swatch { width: 50px; height: 50px; border-radius: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div id="bubbles"></div>
+<div class="texture"></div>
+
+<div class="screen">
+  <h1>Gel-Glass Archipelago</h1>
+  <div class="palette">
+    <div id="bg"   class="swatch"></div>
+    <div id="surf" class="swatch"></div>
+    <div id="prim" class="swatch"></div>
+    <div id="sec"  class="swatch"></div>
+    <div id="acc"  class="swatch"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Calm Skeuomorphic</h2>
+    <p>
+      Gentle load, no flash, bright bubbles rise slowly.<br>
+      A tangible calm inspired by Wii design.
+    </p>
+    <button>Start</button>
+  </div>
+</div>
+
+<script>
+/* Gradient cursor */
+const cursor = document.createElement("div");
+cursor.classList.add("cursor");
+document.body.appendChild(cursor);
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top  = e.clientY + "px";
+});
+document.addEventListener("mousedown", () => {
+  cursor.style.transform = "translate(-50%, -50%) scale(0.8)";
+  cursor.style.opacity   = "0.6";
+});
+document.addEventListener("mouseup", () => {
+  cursor.style.transform = "translate(-50%, -50%) scale(1)";
+  cursor.style.opacity   = "0.8";
+});
+
+/* Bubbles */
+const bubbleLayer = document.getElementById("bubbles");
+for (let i = 0; i < 18; i++) {
+  const bubble = document.createElement("div");
+  bubble.classList.add("bubble");
+  const size = Math.random() * 60 + 20;
+  bubble.style.width  = `${size}px`;
+  bubble.style.height = `${size}px`;
+  bubble.style.left   = `${Math.random() * 100}%`;
+  bubble.style.animationDelay = `${1.5 + Math.random() * 10}s`;
+  bubbleLayer.appendChild(bubble);
+}
+</script>
+</body>
+</html>
+

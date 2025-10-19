@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Gel-Glass Archipelago</title>
+<style>
+:root {
+  --color-bg: #F6FAFB;        /* Seafoam White */
+  --color-surface: #CDE8F4;   /* Dew Aqua */
+  --color-primary: #A8E7B0;   /* Appletini */
+  --color-secondary: #8CC9F8; /* Azure Pop */
+  --color-highlight: #FFFFFF; /* Glasslight */
+  --color-text: #68A9E8;      /* Light Blue Text */
+  --color-line: #A78BFF;      /* Vibrant Mist Violet */
+}
+
+/* === Layout Root === */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* No scroll */
+  background: radial-gradient(circle at 50% 40%, var(--color-bg) 0%, var(--color-surface) 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Monaco", monospace;
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+}
+
+/* === Dewdrops Layer === */
+.dewdrop {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.7), rgba(255,255,255,0.1));
+  box-shadow: 0 0 12px rgba(255,255,255,0.3);
+  backdrop-filter: blur(8px);
+  animation: float 18s ease-in-out infinite;
+  opacity: 0.8;
+  pointer-events: none;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); opacity: 0.8; }
+  50% { transform: translateY(-18px); opacity: 1; }
+}
+
+/* === Central Frame === */
+.screen {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  text-align: center;
+  z-index: 2;
+}
+
+/* === Title === */
+h1 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 6px rgba(104,169,232,0.25);
+  margin: 0;
+}
+
+/* === Color Swatches === */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 0 1rem;
+  max-width: 90%;
+}
+
+.swatch {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: radial-gradient(circle at center, var(--color) 0%, rgba(255,255,255,0.9) 140%);
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 4px 12px rgba(62,107,135,0.15);
+  backdrop-filter: blur(18px) saturate(150%);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.swatch:hover {
+  transform: scale(1.06);
+  box-shadow: 0 6px 20px rgba(62,107,135,0.25);
+}
+
+/* === Card === */
+.card {
+  background: radial-gradient(circle at center, rgba(205,232,244,0.7) 0%, rgba(246,250,251,0.5) 100%);
+  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,0.6);
+  box-shadow: 0 8px 26px rgba(62,107,135,0.15);
+  padding: 1.6rem;
+  max-width: 400px;
+  width: 80%;
+  backdrop-filter: blur(24px) saturate(150%);
+}
+
+.card h2 {
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  color: var(--color-text);
+  margin: 0.2rem 0 0.8rem 0;
+}
+
+.card p {
+  font-family: "Monaco", monospace;
+  font-size: clamp(0.8rem, 2.5vw, 1rem);
+  line-height: 1.5;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* === Button === */
+button {
+  margin-top: 1rem;
+  background: radial-gradient(circle at center, var(--color-primary) 0%, var(--color-secondary) 130%);
+  border: none;
+  color: #ffffff;
+  font-family: "Arial Narrow", Arial, sans-serif;
+  font-weight: 600;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  border-radius: 18px;
+  padding: 0.7rem 1.6rem;
+  box-shadow: 0 6px 18px rgba(140,201,248,0.35);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 3;
+}
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(140,201,248,0.45);
+}
+
+/* === Gradient Cursor === */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, var(--color-primary), var(--color-secondary));
+  box-shadow: 0 0 12px rgba(140,201,248,0.6);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.8;
+  transform: translate(-50%, -50%);
+  transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+  z-index: 9999;
+}
+button:hover ~ .cursor {
+  width: 36px;
+  height: 36px;
+  opacity: 1;
+}
+
+/* === Color Assignment === */
+#bg     { --color: var(--color-bg); }
+#surf   { --color: var(--color-surface); }
+#prim   { --color: var(--color-primary); }
+#sec    { --color: var(--color-secondary); }
+#hl     { --color: var(--color-highlight); }
+#line   { --color: var(--color-line); }
+
+@media (max-width: 768px) {
+  .swatch { width: 50px; height: 50px; border-radius: 14px; }
+  .card { padding: 1.2rem; border-radius: 24px; }
+  .dewdrop { display: none; } /* hide dewdrops on phones */
+}
+</style>
+</head>
+<body>
+
+<!-- Floating dewdrops background -->
+<div id="dewLayer"></div>
+
+<div class="screen">
+  <h1>Gel-Glass Archipelago</h1>
+
+  <div class="palette">
+    <div id="bg" class="swatch"></div>
+    <div id="surf" class="swatch"></div>
+    <div id="prim" class="swatch"></div>
+    <div id="sec" class="swatch"></div>
+    <div id="hl" class="swatch"></div>
+    <div id="line" class="swatch"></div>
+  </div>
+
+  <div class="card">
+    <h2>Dewdrop Edition</h2>
+    <p>
+      No scrolling. Gradient buttons. Floating translucent drops.<br>
+      A calm, tactile environment meant to look like air and water.
+    </p>
+    <button>Try Me</button>
+  </div>
+</div>
+
+<script>
+/* === Gradient Cursor === */
+const cursor = document.createElement("div");
+cursor.classList.add("cursor");
+document.body.appendChild(cursor);
+
+document.addEventListener("mousemove", e => {
+  cursor.style.left = e.clientX + "px";
+  cursor.style.top = e.clientY + "px";
+});
+
+document.addEventListener("mousedown", () => {
+  cursor.style.transform = "translate(-50%, -50%) scale(0.8)";
+  cursor.style.opacity = "0.6";
+});
+document.addEventListener("mouseup", () => {
+  cursor.style.transform = "translate(-50%, -50%) scale(1)";
+  cursor.style.opacity = "0.8";
+});
+
+/* === Dewdrops Generator === */
+const dewLayer = document.getElementById("dewLayer");
+for (let i = 0; i < 10; i++) {
+  const drop = document.createElement("div");
+  drop.classList.add("dewdrop");
+  const size = Math.random() * 50 + 20; // 20–70px
+  drop.style.width = `${size}px`;
+  drop.style.height = `${size}px`;
+  drop.style.top = `${Math.random() * 90}%`;
+  drop.style.left = `${Math.random() * 90}%`;
+  drop.style.animationDelay = `${Math.random() * 8}s`;
+  dewLayer.appendChild(drop);
+}
+</script>
+</body>
+</html>
+

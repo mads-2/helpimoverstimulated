@@ -1,0 +1,42 @@
+# 🧠 macOS + temp files
+.DS_Store
+Thumbs.db
+~$*
+*.docx
+
+# --- COLORS folder ---
+# Ignore these specific files in /colors
+colors/colors.html
+colors/final.html
+colors/colors_preview.html
+colors/final.json
+
+# --- HOMEPAGE folder ---
+# Ignore only these files in /homepage
+homepage/last.html
+homepage/2000_aero.html
+homepage/gel_glass.html
+homepage/2000_aero_bright_wii.html
+homepage/glass_fruit_mist.html
+homepage/2000_aero_real_wii.html
+homepage/hio_planning.docx
+homepage/2000_aero_wii.html
+homepage/html.html
+homepage/2000_final.html
+homepage/last.html
+homepage/2000_fix.html
+homepage/literal_soft_glass.html
+homepage/palette.html
+homepage/circle_jelly.html
+homepage/perfect.html
+homepage/dummy_demo.html
+homepage/round_jelly.html
+homepage/final.html
+homepage/soft_jelly.html
+homepage/final_2000.html
+homepage/~$o_planning.docx
+
+# --- keep everything else ---
+!.gitignore
+!README.md
+
