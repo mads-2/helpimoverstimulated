@@ -12,14 +12,14 @@
 :root {
   --color-bg:#bfc4c6;
   --color-surface:#aeb5b8;
-  --color-primary:#9be4b0;
-  --color-secondary:#8cc9f8;
-  --color-text:#5a9acb;
+  --color-primary:#9be4b0; /* mint green */
+  --color-secondary:#8cc9f8; /* light blue */
+  --color-text:#5a9acb; /* calm blue for title */
 }
 html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;}
 body{
   background:radial-gradient(circle at 50% 45%,var(--color-bg),var(--color-surface));
-  font-family:'Quicksand', Arial, sans-serif;
+  font-family:'Quicksand', sans-serif;
   color:var(--color-text);
   -webkit-font-smoothing:antialiased;
   position:relative;
@@ -75,12 +75,13 @@ body::before{
   border-radius: 12px;
 }
 .title-bar h1{
-  font-family:'Quicksand', Arial, sans-serif;
+  font-family:'Quicksand', sans-serif;
   font-weight:600;
   letter-spacing:0.03em;
   font-size:clamp(1.5rem, 5vw, 2.2rem);
   text-shadow:0 2px 6px rgba(255,255,255,.7);
   margin:0;
+  color: var(--color-text);
   text-transform:none;
   cursor:default;
   max-width:90vw;
@@ -88,6 +89,16 @@ body::before{
 }
 .title-bar h1 em {
   font-style: italic;
+  color: var(--color-text);
+}
+
+/* green glow only on "overstimulated" */
+.green-glow {
+  color: var(--color-text); /* still blue text */
+  text-shadow:
+    0 0 10px var(--color-primary),
+    0 0 18px var(--color-primary),
+    0 0 30px rgba(155,228,176,0.6);
 }
 
 /* button under title */
@@ -99,7 +110,7 @@ body::before{
 .box-button {
   position: relative;
   overflow: hidden;
-  font-family:'Quicksand', Arial, sans-serif;
+  font-family:'Quicksand', sans-serif;
   font-size: clamp(0.9rem, 3.5vw, 1rem);
   font-weight: 500;
   color: #fff;
@@ -202,7 +213,7 @@ body::before{
   position: absolute;
   top: 48px;
   right: 15px;
-  font-family:'Quicksand', Arial, sans-serif;
+  font-family:'Quicksand', sans-serif;
   font-size: 1rem;
   color: #4b91c9;
   background: white;
@@ -243,7 +254,7 @@ body::before{
 <!-- Fixed Title -->
 <div class="title-bar">
   <div class="title-bg">
-    <h1><em>Help!</em> I'm overstimulated.</h1>
+    <h1><em>Help!</em> I'm <span class="green-glow">overstimulated</span>.</h1>
   </div>
   <div class="button-container">
     <button class="box-button" id="toggleButton">What is this site?</button>
@@ -301,11 +312,7 @@ document.addEventListener('click', e => {
 const NUM=24, bubbles=[], layer=document.getElementById("bubbles");
 let W=innerWidth, H=innerHeight;
 const colors = [
-  "#8CC9F8", // sky blue
-  "#9BE4B0", // mint green
-  "#5FB1D6", // ocean blue
-  "#A7E7C0", // seafoam
-  "#6FC8B5", // teal glow
+  "#8CC9F8", "#9BE4B0", "#5FB1D6", "#A7E7C0", "#6FC8B5"
 ];
 function createBubble(){
   const el=document.createElement("div");
