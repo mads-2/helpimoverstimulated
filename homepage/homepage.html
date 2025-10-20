@@ -4,18 +4,22 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Help! I'm overstimulated.</title>
+
+<!-- Soft, rounded Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
 :root {
   --color-bg:#bfc4c6;
   --color-surface:#aeb5b8;
   --color-primary:#9be4b0;
   --color-secondary:#8cc9f8;
-  --color-text:#4b91c9;
+  --color-text:#5a9acb;
 }
 html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;}
 body{
   background:radial-gradient(circle at 50% 45%,var(--color-bg),var(--color-surface));
-  font-family:Arial, sans-serif;
+  font-family:'Quicksand', Arial, sans-serif;
   color:var(--color-text);
   -webkit-font-smoothing:antialiased;
   position:relative;
@@ -45,9 +49,9 @@ body::before{
     rgba(255,255,255,0.1) 65%,
     transparent 100%);
   box-shadow:
-    0 0 12px rgba(255,255,255,0.45),
-    0 0 22px currentColor,
-    0 0 44px currentColor;
+    0 0 18px rgba(200,255,255,0.3),
+    0 0 36px currentColor,
+    0 0 72px currentColor;
   pointer-events:none;
   opacity:0;
   will-change:transform,opacity;
@@ -71,8 +75,9 @@ body::before{
   border-radius: 12px;
 }
 .title-bar h1{
-  font-family:"Arial Narrow", Arial, sans-serif;
-  font-weight:700;
+  font-family:'Quicksand', Arial, sans-serif;
+  font-weight:600;
+  letter-spacing:0.03em;
   font-size:clamp(1.5rem, 5vw, 2.2rem);
   text-shadow:0 2px 6px rgba(255,255,255,.7);
   margin:0;
@@ -94,7 +99,7 @@ body::before{
 .box-button {
   position: relative;
   overflow: hidden;
-  font-family: Arial, sans-serif;
+  font-family:'Quicksand', Arial, sans-serif;
   font-size: clamp(0.9rem, 3.5vw, 1rem);
   font-weight: 500;
   color: #fff;
@@ -197,7 +202,7 @@ body::before{
   position: absolute;
   top: 48px;
   right: 15px;
-  font-family: Arial, sans-serif;
+  font-family:'Quicksand', Arial, sans-serif;
   font-size: 1rem;
   color: #4b91c9;
   background: white;
@@ -224,7 +229,8 @@ body::before{
       0 0 80px rgba(150,200,255,0.18);
     filter:blur(2px);
     pointer-events:none;mix-blend-mode:screen;opacity:.85;
-    transform:translate(-50%,-50%);transition:width .2s,height .2s,opacity .2s;
+    transform:translate(-50%,-50%);
+    transition:width .2s,height .2s,opacity .2s;
     z-index:9999;
   }
 }
@@ -295,13 +301,11 @@ document.addEventListener('click', e => {
 const NUM=24, bubbles=[], layer=document.getElementById("bubbles");
 let W=innerWidth, H=innerHeight;
 const colors = [
-  "#F89EAF", // muted red-pink
-  "#FFB984", // muted orange
-  "#FFF4B8", // muted yellow
-  "#9BE4B0", // mint
-  "#8CC9F8", // light blue
-  "#B6B4F0", // lavender
-  "#FFB3C1"  // pink
+  "#8CC9F8", // sky blue
+  "#9BE4B0", // mint green
+  "#5FB1D6", // ocean blue
+  "#A7E7C0", // seafoam
+  "#6FC8B5", // teal glow
 ];
 function createBubble(){
   const el=document.createElement("div");
