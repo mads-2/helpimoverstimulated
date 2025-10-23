@@ -21,7 +21,7 @@ html, body {
   overflow: hidden;
 }
 
-/* 🪸 Bottom objects (default: full size) */
+/* 🪸 Bottom objects */
 .bottom-object {
   position: absolute;
   pointer-events: none;
@@ -29,7 +29,7 @@ html, body {
   transform-origin: bottom center;
 }
 
-/* 🐠 Fish (default size) */
+/* 🐠 Fish */
 .fish {
   position: absolute;
   height: 25vh;
@@ -54,45 +54,28 @@ function isMobileDevice() {
   );
 }
 
-/* === Base spawn zones (desktop defaults) === */
-const baseZones = {
-  leftSeaweed:  { xMin: 5,  xMax: 28, yMin: 25, yMax: 38 },
-  leftAnemone:  { xMin: 10, xMax: 25, yMin: 5,  yMax: 18 },
-  crab:         { xMin: 42, xMax: 58, yMin: 10, yMax: 25 },
-  middleShells: { xMin: 40, xMax: 60, yMin: 2,  yMax: 10 },
-  rightSeaweed: { xMin: 68, xMax: 92, yMin: 25, yMax: 38 },
-  rightAnemone: { xMin: 70, xMax: 90, yMin: 5,  yMax: 18 }
+/* === Fixed absolute positions for seaweed/anemone === */
+const fixedPositions = {
+  leftSeaweed:  { x: 22, yMin: 25, yMax: 38 },
+  leftAnemone:  { x: 19, yMin: 5,  yMax: 18 },
+  rightSeaweed: { x: 78, yMin: 25, yMax: 38 },
+  rightAnemone: { x: 81, yMin: 5,  yMax: 18 }
 };
 
-/* === Get zone depending on device === */
-function getZones() {
-  if (!isMobileDevice()) return baseZones;
-
-  // 📱 Mobile — raise crab, shells, and anemone a bit
-  return {
-    leftSeaweed:  baseZones.leftSeaweed,
-    leftAnemone:  { ...baseZones.leftAnemone, yMin: baseZones.leftAnemone.yMin + 6, yMax: baseZones.leftAnemone.yMax + 6 },
-    crab:         { ...baseZones.crab,         yMin: baseZones.crab.yMin + 8,         yMax: baseZones.crab.yMax + 8 },
-    middleShells: { ...baseZones.middleShells, yMin: baseZones.middleShells.yMin + 7, yMax: baseZones.middleShells.yMax + 7 },
-    rightSeaweed: baseZones.rightSeaweed,
-    rightAnemone: { ...baseZones.rightAnemone, yMin: baseZones.rightAnemone.yMin + 6, yMax: baseZones.rightAnemone.yMax + 6 }
-  };
-}
+/* === Other objects === */
+const baseZones = {
+  crab:        { x: 50, yMin: 10, yMax: 25 },
+  centerShell: { x: 50, yMin: 2,  yMax: 10 }
+};
 
 /* === Place bottom objects === */
-async function placeObject(src, zone, sizeVHRange, tiltRange, invertChance=0.5) {
+async function placeObject(src, zone, sizeVHRange, tiltRange, invertChance=0.5, fixedX=null) {
   return new Promise(resolve=>{
     const aquarium=document.getElementById("aquarium");
     const img=document.createElement("img");
     img.src=src;
     img.classList.add("bottom-object");
     let sizeVH=rand(sizeVHRange[0],sizeVHRange[1]);
-
-    // 🧩 Shrink on mobile
-    if (isMobileDevice()) {
-      sizeVH *= 0.5;
-    }
-
     img.style.height=`${sizeVH}vh`;
 
     img.onload=()=>{
@@ -100,13 +83,11 @@ async function placeObject(src, zone, sizeVHRange, tiltRange, invertChance=0.5) 
       const pxH=(sizeVH/100)*rect.height;
       const pxW=img.naturalWidth*(pxH/img.naturalHeight);
 
-      const xMin=rect.width*zone.xMin/100;
-      const xMax=rect.width*zone.xMax/100;
+      const x = rect.width * (fixedX / 100) - pxW / 2;
       const yMin=rect.height*zone.yMin/100;
       const yMax=rect.height*zone.yMax/100;
-
-      const x=rand(xMin,xMax-pxW);
       const y=rand(yMin,yMax-pxH*0.4);
+
       img.style.left=`${x}px`;
       img.style.bottom=`${y}px`;
 
@@ -123,20 +104,90 @@ async function placeObject(src, zone, sizeVHRange, tiltRange, invertChance=0.5) 
 /* === Add bottom objects === */
 async function addBottomObjects() {
   const base="../cropped/";
-  const zones=getZones();
+  const mobile=isMobileDevice();
 
-  // Left group
-  await placeObject(base+"bottom_seaweed.png", zones.leftSeaweed, [40,47], [-8,8]);
-  await placeObject(base+"bottom_anemone.png", zones.leftAnemone, [36,43], [-6,6]);
+  // 🌿 Sizes
+  const seaweedSize = mobile ? [20,25] : [40,47];
+  const anemoneSize = mobile ? [18,23] : [36,43];
+  const crabSize = mobile ? [18,22] : [30,35];
+  const shellSize = [25,30];
 
-  // Crab and shells
-  await placeObject(base+"bottom_crab.png", zones.crab, [35,40], [0,0]);
-  await placeObject(base+"bottom_shell.png", zones.middleShells, [25,30], [-6,6]);
-  await placeObject(base+"bottom_shell.png", zones.middleShells, [25,30], [-6,6]);
+  // 📏 Adjust Y positions for mobile
+  const yOffset = mobile ? 6 : 0; // lift mobile elements higher
 
-  // Right group
-  await placeObject(base+"bottom_seaweed.png", zones.rightSeaweed, [40,47], [-8,8]);
-  await placeObject(base+"bottom_anemone.png", zones.rightAnemone, [36,43], [-6,6]);
+  // 🌿 Left and right seaweed (fixed)
+  await placeObject(
+    base+"bottom_seaweed.png",
+    fixedPositions.leftSeaweed,
+    seaweedSize,
+    [-2,2],
+    0.5,
+    fixedPositions.leftSeaweed.x
+  );
+
+  await placeObject(
+    base+"bottom_seaweed.png",
+    fixedPositions.rightSeaweed,
+    seaweedSize,
+    [-2,2],
+    0.5,
+    fixedPositions.rightSeaweed.x
+  );
+
+  // 🪸 Left and right anemone — spawn higher on mobile
+  await placeObject(
+    base+"bottom_anemone.png",
+    {
+      ...fixedPositions.leftAnemone,
+      yMin: fixedPositions.leftAnemone.yMin + yOffset,
+      yMax: fixedPositions.leftAnemone.yMax + yOffset
+    },
+    anemoneSize,
+    [-2,2],
+    0.5,
+    fixedPositions.leftAnemone.x
+  );
+
+  await placeObject(
+    base+"bottom_anemone.png",
+    {
+      ...fixedPositions.rightAnemone,
+      yMin: fixedPositions.rightAnemone.yMin + yOffset,
+      yMax: fixedPositions.rightAnemone.yMax + yOffset
+    },
+    anemoneSize,
+    [-2,2],
+    0.5,
+    fixedPositions.rightAnemone.x
+  );
+
+  // 🦀 Crab — higher on mobile
+  await placeObject(
+    base+"bottom_crab.png",
+    {
+      ...baseZones.crab,
+      yMin: baseZones.crab.yMin + (mobile ? 8 : 0),
+      yMax: baseZones.crab.yMax + (mobile ? 8 : 0)
+    },
+    crabSize,
+    [0,0],
+    0.5,
+    baseZones.crab.x
+  );
+
+  // 🐚 Shell — higher on mobile
+  await placeObject(
+    base+"bottom_shell.png",
+    {
+      ...baseZones.centerShell,
+      yMin: baseZones.centerShell.yMin + (mobile ? 8 : 0),
+      yMax: baseZones.centerShell.yMax + (mobile ? 8 : 0)
+    },
+    shellSize,
+    [-2,2],
+    0.5,
+    baseZones.centerShell.x
+  );
 }
 
 /* === 🐠 Fish === */
@@ -160,10 +211,10 @@ function spawnFish(num=10){
     img.src=src;
     img.classList.add("fish");
 
-    // 🧩 Shrink fish 30% on mobile
+    // 🐠 Slightly smaller fish on mobile
     if (isMobileDevice()) {
-      const currentHeight = src.includes("fish_jelly") ? 35 : 25;
-      img.style.height = `${currentHeight * 0.7}vh`;
+      const baseH = src.includes("fish_jelly") ? 35 : 25;
+      img.style.height = `${baseH * 0.8}vh`;
     } else {
       if(src.includes("fish_jelly")) img.classList.add("jelly");
     }
