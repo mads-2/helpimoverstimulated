@@ -4,17 +4,15 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>Help! I'm overstimulated.</title>
-
-<!-- Soft, rounded Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 :root {
   --color-bg:#bfc4c6;
   --color-surface:#aeb5b8;
-  --color-primary:#9be4b0; /* mint green */
-  --color-secondary:#8cc9f8; /* light blue */
-  --color-text:#5a9acb; /* calm blue for title */
+  --color-primary:#9be4b0;
+  --color-secondary:#8cc9f8;
+  --color-text:#5a9acb;
 }
 html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;}
 body{
@@ -37,227 +35,181 @@ body::before{
 }
 
 /* bubbles */
-#bubbles{
-  position:fixed; inset:0; overflow:hidden; z-index:2;
-}
+#bubbles{position:fixed; inset:0; overflow:hidden; z-index:2;}
 .bubble{
-  position:absolute;
-  border-radius:50%;
-  background: radial-gradient(circle at 35%35%,
-    rgba(255,255,255,0.8) 0%,
-    rgba(255,255,255,0.35) 30%,
-    rgba(255,255,255,0.1) 65%,
-    transparent 100%);
-  box-shadow:
-    0 0 18px rgba(200,255,255,0.3),
-    0 0 36px currentColor,
-    0 0 72px currentColor;
-  pointer-events:none;
-  opacity:0;
-  will-change:transform,opacity;
-  transition:opacity .25s ease-out;
+  position:absolute;border-radius:50%;
+  background:radial-gradient(circle at 35%35%,rgba(255,255,255,0.8)0%,rgba(255,255,255,0.35)30%,rgba(255,255,255,0.1)65%,transparent 100%);
+  box-shadow:0 0 18px rgba(200,255,255,0.3),0 0 36px currentColor,0 0 72px currentColor;
+  pointer-events:none;opacity:.25;transition:opacity .6s ease;will-change:transform,opacity;
 }
 
 /* title bar */
-.title-bar{
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 1rem 0 0.5rem;
-  text-align: center;
-  z-index: 20;
+.title-bar{position:fixed;top:0;left:0;width:100%;padding:1rem 0 .5rem;text-align:center;z-index:20;}
+.title-bg{display:inline-block;background:transparent;padding:.4rem 1rem;border-radius:12px;}
+.title-bar h1{font-weight:600;letter-spacing:.03em;font-size:clamp(1.5rem,5vw,2.2rem);text-shadow:0 2px 6px rgba(255,255,255,.7);margin:0;color:var(--color-text);}
+.green-glow{color:var(--color-text);text-shadow:0 0 10px var(--color-primary),0 0 18px var(--color-primary),0 0 30px rgba(155,228,176,.6);}
+
+/* buttons */
+.button-container{margin-top:.75rem;display:flex;justify-content:center;gap:.8rem;}
+.box-button{position:relative;overflow:hidden;font-size:clamp(.9rem,3.5vw,1rem);font-weight:500;color:#fff;border:none;cursor:pointer;
+  padding:.9rem 1.8rem;border-radius:10px;backdrop-filter:blur(14px)saturate(180%);transition:transform .3s,box-shadow .3s;}
+.box-button:active{transform:translateY(3px)scale(.97);}
+#toggleButton{background:linear-gradient(180deg,rgba(155,228,176,1),rgba(100,190,140,1));box-shadow:0 6px 18px rgba(155,228,176,.35);}
+
+/* NEON glowing blue Games button */
+#gamesButton{
+  background:linear-gradient(180deg,rgba(170,220,255,1),rgba(110,180,240,1));
+  color:#fff;
+  text-shadow:0 0 8px rgba(180,230,255,.9),0 0 14px rgba(150,220,255,.8),0 0 28px rgba(120,200,255,.6);
+  box-shadow:0 0 12px rgba(150,220,255,.9),0 0 24px rgba(120,200,255,.8),0 0 48px rgba(100,180,255,.6),inset 0 0 8px rgba(200,240,255,.4);
+  border:1.5px solid rgba(200,240,255,.7);
+  animation:neonPulse 2.8s ease-in-out infinite alternate;
 }
-.title-bg {
-  display: inline-block;
-  background: transparent;
-  padding: 0.4rem 1rem;
-  border-radius: 12px;
-}
-.title-bar h1{
-  font-family:'Quicksand', sans-serif;
-  font-weight:600;
-  letter-spacing:0.03em;
-  font-size:clamp(1.5rem, 5vw, 2.2rem);
-  text-shadow:0 2px 6px rgba(255,255,255,.7);
-  margin:0;
-  color: var(--color-text);
-  text-transform:none;
-  cursor:default;
-  max-width:90vw;
-  word-wrap:break-word;
-}
-.title-bar h1 em {
-  font-style: italic;
-  color: var(--color-text);
+@keyframes neonPulse{
+  0%{box-shadow:0 0 10px rgba(150,220,255,.7),0 0 20px rgba(120,200,255,.5),0 0 40px rgba(100,180,255,.4),inset 0 0 5px rgba(200,240,255,.3);
+      text-shadow:0 0 6px rgba(180,230,255,.7),0 0 16px rgba(150,220,255,.6);}
+  100%{box-shadow:0 0 16px rgba(170,240,255,1),0 0 32px rgba(150,220,255,.9),0 0 64px rgba(120,200,255,.8),inset 0 0 12px rgba(220,250,255,.5);
+       text-shadow:0 0 12px rgba(200,250,255,1),0 0 24px rgba(160,230,255,.9);}
 }
 
-/* green glow only on "overstimulated" */
-.green-glow {
-  color: var(--color-text); /* still blue text */
-  text-shadow:
-    0 0 10px var(--color-primary),
-    0 0 18px var(--color-primary),
-    0 0 30px rgba(155,228,176,0.6);
+/* overlays */
+.mission-overlay,.games-overlay{
+  position:fixed;inset:0;background:rgba(255,255,255,.25);backdrop-filter:blur(10px)saturate(160%);
+  display:flex;justify-content:center;align-items:center;opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:10;
+}
+.mission-overlay.active,.games-overlay.active{opacity:1;pointer-events:auto;}
+
+/* mission box */
+.mission-content{
+  position:relative;background:rgba(255,255,255,.4);border-radius:16px;border:1px solid rgba(255,255,255,.5);
+  box-shadow:inset 0 2px 4px rgba(255,255,255,.2),0 4px 14px rgba(50,60,70,.1);
+  max-width:800px;width:90%;padding:1.5rem;text-align:left;font-size:1rem;line-height:1.8;
 }
 
-/* button under title */
-.button-container {
-  margin-top: 0.75rem;
-  display: flex;
-  justify-content: center;
-}
-.box-button {
+/* games box */
+.games-box {
   position: relative;
-  overflow: hidden;
-  font-family:'Quicksand', sans-serif;
-  font-size: clamp(0.9rem, 3.5vw, 1rem);
-  font-weight: 500;
-  color: #fff;
-  background: linear-gradient(180deg, rgba(75,145,201,0.9), rgba(46,90,150,0.9));
-  border: none;
-  cursor: pointer;
-  padding: 0.9rem 1.8rem;
-  border-radius: 10px;
-  backdrop-filter: blur(14px) saturate(180%);
-  box-shadow:
-    0 6px 18px rgba(75,145,201,0.35),
-    inset 0 0 0 rgba(255,255,255,0.1);
-  transform: translateY(0);
-  transition:
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    background 0.6s ease;
-}
-.box-button:hover {
-  box-shadow:
-    0 8px 24px rgba(75,145,201,0.55),
-    inset 0 0 8px rgba(255,255,255,0.25);
-}
-.box-button:active {
-  transform: translateY(4px) scale(0.97);
-  box-shadow:
-    0 2px 10px rgba(75,145,201,0.4),
-    inset 0 4px 8px rgba(255,255,255,0.15);
-  transition:
-    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.box-button::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 10px;
-  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 70%);
+  background: rgba(255,255,255,.4);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.5);
+  box-shadow: inset 0 2px 6px rgba(255,255,255,.2),
+              0 4px 18px rgba(70,80,90,.15);
+  width: 50vw;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  animation: fadeIn .3s ease forwards;
   opacity: 0;
-  transform: scale(0.8);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-  pointer-events: none;
+  overflow: hidden;
+  padding-top: 3rem;
 }
-.box-button:active::after {
-  opacity: 1;
-  transform: scale(1.3);
+.games-overlay.active .games-box { opacity: 1; }
+
+/* app grid */
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.6rem;
+  width: 80%;
+  height: 55%;
+  justify-items: center;
+  align-items: start;
+  margin-top: 0.3rem;
 }
 
-/* mission overlay */
-.mission-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(12px) saturate(160%);
+/* app tiles (outline + dot only) */
+.app-tile {
+  width: 65%;
+  aspect-ratio: 1 / 1;
+  background: transparent;
+  border-radius: 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-  z-index: 10;
+  text-decoration: none;
+  position: relative;
+  transition: transform .25s ease, border .25s ease;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
 }
-.mission-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
+.app-tile:hover {
+  transform: scale(1.05);
+  border-color: rgba(180, 220, 255, 0.8);
+}
+.app-tile::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: rgba(90,154,203,0.9);
+  border-radius: 50%;
+  position: absolute;
 }
 
-/* mission content box */
-.mission-content {
-  position: relative;
-  background: rgba(255,255,255,0.6);
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.6);
-  box-shadow: inset 0 2px 4px rgba(255,255,255,.3),
-              0 4px 14px rgba(50,60,70,.15);
-  max-width: 800px;
-  width: 90%;
-  padding: 1.5rem;
-  text-align: left;
-  font-size: clamp(0.9rem, 3vw, 1rem);
-  line-height: 1.9;
+/* Aquarium icon stays special */
+.app-tile:first-child img {
+  position: absolute;
+  top: 57%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  height: auto;
+  pointer-events: none;
 }
+.app-tile:first-child::after {
+  display: none;
+}
+
+/* === MOBILE FIXES === */
 @media (max-width: 600px) {
-  .mission-content {
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    border-radius: 0;
-    display: flex;
-    flex-direction: column;
+  .games-box {
+    width: 85vw;
+    height: 50vh; /* 10% shorter */
+    padding-top: 1rem;
     justify-content: center;
   }
-}
 
-/* close button (X) */
-.close-btn {
-  position: absolute;
-  top: 48px;
-  right: 15px;
-  font-family:'Quicksand', sans-serif;
-  font-size: 1rem;
-  color: #4b91c9;
-  background: white;
-  border: 2px solid #4b91c9;
-  border-radius: 6px;
-  padding: 4px 10px;
-  cursor: pointer;
-  box-shadow: 0 0 6px rgba(75,145,201,0.3);
-  transition: box-shadow 0.2s ease;
-}
-.close-btn:hover,
-.close-btn:active {
-  box-shadow: 0 0 15px rgba(75,145,201,0.7);
-}
+  .app-grid {
+    gap: 0.4rem;
+    width: 88%;
+    height: 78%;
+    margin-top: 0;
+    align-items: center;
+  }
 
-/* cursor (desktop only) */
-@media (pointer: fine) {
-  .cursor{
-    position:fixed;top:0;left:0;width:28px;height:28px;border-radius:50%;
-    background:radial-gradient(circle at center,var(--color-primary),var(--color-secondary));
-    box-shadow:
-      0 0 18px rgba(150,200,255,0.5),
-      0 0 40px rgba(150,200,255,0.25),
-      0 0 80px rgba(150,200,255,0.18);
-    filter:blur(2px);
-    pointer-events:none;mix-blend-mode:screen;opacity:.85;
-    transform:translate(-50%,-50%);
-    transition:width .2s,height .2s,opacity .2s;
-    z-index:9999;
+  .app-tile {
+    width: 72%;
+  }
+
+  /* Smaller Aquarium icon on mobile */
+  .app-tile:first-child img {
+    width: 225px; /* half the size */
   }
 }
+
+.close-btn{
+  position:absolute;top:48px;right:15px;font-size:1rem;color:#4b91c9;background:white;border:2px solid #4b91c9;border-radius:6px;padding:4px 10px;cursor:pointer;
+}
+@keyframes fadeIn{from{opacity:0;transform:scale(.96);}to{opacity:1;transform:scale(1);}}
 </style>
 </head>
 <body>
 <div class="texture"></div>
 <div id="bubbles"></div>
 
-<!-- Fixed Title -->
 <div class="title-bar">
   <div class="title-bg">
     <h1><em>Help!</em> I'm <span class="green-glow">overstimulated</span>.</h1>
   </div>
   <div class="button-container">
     <button class="box-button" id="toggleButton">What is this site?</button>
+    <button class="box-button" id="gamesButton">Games :)</button>
   </div>
 </div>
 
@@ -266,107 +218,79 @@ body::before{
   <div class="mission-content">
     <button class="close-btn" id="closeButton">X</button>
     <p>
-This site is designed to help <strong>ground</strong> you when you are <strong>overstimulated</strong>.<br>
-If you think the games are <strong>boring</strong>, good. They are designed to be <strong>calming</strong>, not <strong>addictive</strong>.<br>
-This site is inspired by the <strong>Frutiger Aero aesthetic</strong>.<br>
-This site will stay <strong>ad-free</strong>, <strong>login-free</strong>, and <strong>safe for all ages</strong>.
+      This site is designed to help <strong>ground</strong> you when you are <strong>overstimulated</strong>.<br>
+      If you think the games are <strong>boring</strong>, good. They are designed to be <strong>calming</strong>, not <strong>addictive</strong>.<br>
+      Inspired by the <strong>Frutiger Aero</strong> aesthetic.<br>
+      This site will stay <strong>ad-free</strong>, <strong>login-free</strong>, and <strong>safe for all ages</strong>.
     </p>
   </div>
 </div>
 
+<!-- Games Overlay -->
+<div class="games-overlay" id="gamesOverlay">
+  <div class="games-box">
+    <button class="close-btn" id="closeGames">X</button>
+    <div class="app-grid">
+      <a href="../aquarium/game/aquarium.html" class="app-tile">
+        <img src="icons/icon_aquarium.png" alt="Aquarium Icon">
+      </a>
+      <div class="app-tile"></div>
+      <div class="app-tile"></div>
+      <div class="app-tile"></div>
+      <div class="app-tile"></div>
+      <div class="app-tile"></div>
+      <div class="app-tile"></div>
+      <div class="app-tile"></div>
+      <div class="app-tile"></div>
+    </div>
+  </div>
+</div>
+
 <script>
-/* === Glowing cursor (only if desktop) === */
-if (window.matchMedia('(pointer: fine)').matches) {
-  const cursor = document.createElement("div");
-  cursor.classList.add("cursor");
-  document.body.appendChild(cursor);
-  let targetX = innerWidth/2, targetY = innerHeight/2;
-  let currentX = targetX, currentY = targetY;
-  addEventListener("mousemove", e => { targetX = e.clientX; targetY = e.clientY; });
-  function animateCursor(){
-    const s=0.28;
-    currentX += (targetX-currentX)*s;
-    currentY += (targetY-currentY)*s;
-    cursor.style.left = currentX+"px";
-    cursor.style.top = currentY+"px";
-    requestAnimationFrame(animateCursor);
-  }
-  animateCursor();
-}
+/* Overlay Logic */
+const missionOverlay=document.getElementById('missionOverlay');
+const gamesOverlay=document.getElementById('gamesOverlay');
+const toggleButton=document.getElementById('toggleButton');
+const gamesButton=document.getElementById('gamesButton');
+const closeButton=document.getElementById('closeButton');
+const closeGames=document.getElementById('closeGames');
+let gamesBoxActive=false,missionBoxActive=false;
 
-/* === Mission overlay toggle === */
-const missionOverlay = document.getElementById('missionOverlay');
-const toggleButton = document.getElementById('toggleButton');
-const closeButton = document.getElementById('closeButton');
+function openMission(){if(gamesBoxActive)closeGamesOverlay();missionOverlay.classList.add('active');missionBoxActive=true;}
+function closeMissionOverlay(){missionOverlay.classList.remove('active');missionBoxActive=false;}
+function openGames(){if(missionBoxActive)closeMissionOverlay();gamesOverlay.classList.add('active');gamesBoxActive=true;}
+function closeGamesOverlay(){gamesOverlay.classList.remove('active');gamesBoxActive=false;}
+toggleButton.onclick=openMission;closeButton.onclick=closeMissionOverlay;
+gamesButton.onclick=openGames;closeGames.onclick=closeGamesOverlay;
 
-function openMission() { missionOverlay.classList.add('active'); }
-function closeMission() { missionOverlay.classList.remove('active'); }
+/* Bubbles Animation */
+const NUM=24,bubbles=[],layer=document.getElementById("bubbles");
+let W=innerWidth,H=innerHeight;
+const colors=["#8CC9F8","#9BE4B0","#5FB1D6","#A7E7C0","#6FC8B5"];
+function createBubble(){const el=document.createElement("div");el.className="bubble";const r=25+Math.random()*45;el.style.width=el.style.height=r+"px";
+el.style.color=colors[Math.floor(Math.random()*colors.length)];
+const b={el,r:r/2,x:Math.random()*W,y:H*Math.random(),vx:(Math.random()-.5)*0.6,vy:-0.4-Math.random()*0.3,popped:false};layer.appendChild(el);bubbles.push(b);}
+for(let i=0;i<NUM;i++)createBubble();
 
-toggleButton.addEventListener('click', e => { e.stopPropagation(); openMission(); });
-closeButton.addEventListener('click', e => { e.stopPropagation(); closeMission(); });
-document.addEventListener('click', e => {
-  if (!missionOverlay.contains(e.target) && e.target !== toggleButton) closeMission();
-});
-
-/* === Bubbles === */
-const NUM=24, bubbles=[], layer=document.getElementById("bubbles");
-let W=innerWidth, H=innerHeight;
-const colors = [
-  "#8CC9F8", "#9BE4B0", "#5FB1D6", "#A7E7C0", "#6FC8B5"
-];
-function createBubble(){
-  const el=document.createElement("div");
-  el.className="bubble";
-  const r=30+Math.random()*40;
-  el.style.width=el.style.height=r+"px";
-  el.style.color = colors[Math.floor(Math.random()*colors.length)];
-  const b={el,r:r/2,x:Math.random()*W,y:H*Math.random(),
-           vx:(Math.random()-.5)*0.8,vy:-0.45-Math.random()*0.35,popped:false};
-  layer.appendChild(el);bubbles.push(b);
-}
-for(let i=0;i<NUM;i++) createBubble();
-
-addEventListener('pointerdown', e=>{
-  const x=e.clientX,y=e.clientY;
-  const el=document.elementFromPoint(x,y);
-  if (el && (el.closest('.box-button') || el.closest('.mission-content'))) return;
-  for(const b of bubbles){
-    const dx=x-b.x, dy=y-b.y;
-    if(dx*dx+dy*dy<=b.r*b.r && !b.popped){
-      b.popped=true; b.el.style.opacity=0;
-      setTimeout(()=>{
-        b.x=Math.random()*W; b.y=H+80;
-        b.vy=-0.45-Math.random()*0.35;
-        b.popped=false; b.el.style.opacity=0.25;
-      },250);
+window.addEventListener('pointerdown',e=>{
+  if(missionBoxActive||gamesBoxActive)return;
+  const x=e.clientX,y=e.clientY;if(e.target.closest('.box-button'))return;
+  for(const b of bubbles){if(b.popped)continue;
+    const dx=x-b.x,dy=y-b.y;if(dx*dx+dy*dy<=b.r*b.r){
+      b.popped=true;b.el.style.opacity=0;
+      setTimeout(()=>{b.x=Math.random()*W;b.y=H+80;b.vy=-0.4-Math.random()*0.3;b.popped=false;b.el.style.opacity=0.25;},600);
       break;
-    }
-  }
-});
-
+    }}});
 function animateBubbles(){
-  const t=Date.now();
-  for(const b of bubbles){
-    if(!b.popped){
-      b.x+=b.vx;b.y+=b.vy;
-      if(b.x<b.r||b.x>W-b.r) b.vx*=-1;
-      b.vx+=Math.sin(t/4000+b.r)*0.0003;
-      if(b.y<H*0.9&&b.y>0)b.el.style.opacity=0.9;
-      if(b.y<180)b.el.style.opacity=Math.max(0,b.y/180);
-    }
-    if(b.y<-b.r){
-      b.y=H+60;
-      b.x=Math.random()*W;
-      b.vy=-0.45-Math.random()*0.35;
-      b.el.style.opacity=0.2;
-    }
-    b.el.style.transform=`translate3d(${b.x-b.r}px,${b.y-b.r}px,0)`;
-  }
-  requestAnimationFrame(animateBubbles);
-}
-animateBubbles();
-
-addEventListener('resize', ()=>{W=innerWidth;H=innerHeight;});
+  const boxRect=gamesBoxActive?document.querySelector('.games-box').getBoundingClientRect():null;
+  for(const b of bubbles){if(!b.popped){
+    b.x+=b.vx;b.y+=b.vy;
+    if(b.x<b.r||b.x>W-b.r)b.vx*=-1;
+    if(b.y<-b.r){b.y=H+60;if(gamesBoxActive&&boxRect){do{b.x=Math.random()*W;}while(b.x>boxRect.left&&b.x<boxRect.right);}else{b.x=Math.random()*W;}b.vy=-0.4-Math.random()*0.3;}
+    if(gamesBoxActive&&boxRect&&b.x>boxRect.left&&b.x<boxRect.right&&b.y>boxRect.top&&b.y<boxRect.bottom){b.y=H+60;}
+    b.el.style.transform=`translate3d(${b.x-b.r}px,${b.y-b.r}px,0)`;b.el.style.opacity=0.9;}}
+  requestAnimationFrame(animateBubbles);}
+animateBubbles();addEventListener('resize',()=>{W=innerWidth;H=innerHeight;});
 </script>
 </body>
 </html>
