@@ -5,16 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Fruit Snack Sorter</title>
 <style>
-  body {
+  /* 🧭 Global reset + mobile stability */
+  html, body {
     margin: 0;
     padding: 0;
     position: relative;
     height: 100vh;
     overflow: hidden;
     font-family: sans-serif;
+    overscroll-behavior: none;
+    touch-action: none;
   }
 
-  /* 🌫️ Dimmed + desaturated background overlay */
+  /* 🌳 Background */
   body::before {
     content: "";
     position: absolute;
@@ -24,7 +27,9 @@
     z-index: -1;
   }
 
+  /* 🎮 Main container */
   .game-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -34,16 +39,15 @@
     margin: 0 auto;
     height: 100%;
     box-sizing: border-box;
+    z-index: 1;
   }
 
-  /* 🌈 Curved arc for bowls (desktop) */
+  /* 🥣 Bowls row */
   .bowls {
     position: relative;
-    width: fit-content;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: nowrap;
     gap: 3vw;
     margin-bottom: 12vh;
   }
@@ -53,40 +57,33 @@
     max-width: 200px;
     aspect-ratio: 1 / 1;
     filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.45));
+    transition: transform 0.2s ease;
   }
 
-  /* Dramatic arc curvature (desktop only) */
   .bowl:nth-child(1),
-  .bowl:nth-child(6) {
-    transform: translateY(200px);
-  }
+  .bowl:nth-child(6) { transform: translateY(200px); }
   .bowl:nth-child(2),
-  .bowl:nth-child(5) {
-    transform: translateY(130px);
-  }
+  .bowl:nth-child(5) { transform: translateY(130px); }
   .bowl:nth-child(3),
-  .bowl:nth-child(4) {
-    transform: translateY(50px);
-  }
+  .bowl:nth-child(4) { transform: translateY(50px); }
 
-  /* 🍇 Fruits 2×3 grid (desktop) */
+  /* 🍇 Fruit area */
   .fruits {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    grid-gap: 5vw;
-    justify-items: center;
-    align-items: center;
-    margin-top: 2vh;
+    position: relative;
+    width: 90%;
+    height: 40vh;
+    overflow: hidden;
   }
 
   .fruit {
+    position: absolute;
     width: 15vw;
     max-width: 180px;
     aspect-ratio: 1 / 1;
     transform: scale(1.35);
     filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.35));
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, opacity 0.5s ease;
+    cursor: pointer;
   }
 
   .fruit[alt="Banana"],
@@ -94,67 +91,96 @@
     transform: scale(1.1);
   }
 
+  /* ✨ Highlight for selected fruit */
+  .fruit.selected {
+    outline: 4px solid rgba(255,255,255,0.6);
+    border-radius: 12px;
+  }
+
+  /* 🥣 Plate smiley feedback */
+  .plate-smiley {
+    position: absolute;
+    font-family: monospace;
+    font-size: 2vw;
+    color: rgba(255,255,255,0.9);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeoutsmile 1.3s ease-in-out forwards;
+  }
+
+  @keyframes fadeoutsmile {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    10%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    80%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -60%) scale(1); }
+  }
+
   /* 📱 Mobile layout */
   @media (max-width: 700px) {
-    .game-container {
-      justify-content: flex-start;
-      padding-top: 10vh; /* keeps game lower overall */
-    }
-
-    /* 🥣 Bowls: 2×3 grid on mobile */
     .bowls {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 1fr);
       grid-gap: 5vw;
-      justify-items: center;
-      align-items: center;
-      margin-bottom: 8vh;
-      position: relative;
-      width: 90%;
+      margin-bottom: 6vh;
     }
 
     .bowl {
       width: 30vw;
       max-width: 170px;
-      filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.45));
       transform: none !important;
     }
 
-    /* 🍒 Fruits 2×3 grid, slightly higher */
+    /* Fruits appear higher and centered */
     .fruits {
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      grid-gap: 2vw;
-      width: 90%;
-      margin-top: 3vh;
-      margin-bottom: 0;
-      position: relative;
-      top: -3vh; /* 🍇 move fruits slightly higher */
+      width: 100%;
+      height: 42vh;
+      margin-top: -2vh; /* raise slightly */
     }
 
     .fruit {
       width: 27vw;
       max-width: 180px;
       transform: scale(1.4);
-      filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.35));
     }
 
-    /* Top and bottom fruit rows slightly closer */
-    .fruit:nth-child(-n+3) {
-      transform: translateY(-1vh) scale(1.4);
+    /* Larger plate smileys */
+    .plate-smiley {
+      font-size: 7vw;
     }
-    .fruit:nth-child(n+4) {
-      transform: translateY(-2vh) scale(1.4);
-    }
+  }
 
-    .fruit[alt="Banana"],
-    .fruit[alt="Strawberry"] {
-      transform: translateY(-1.5vh) scale(1.2);
+  /* 😃 Center win smiley (rotated + eye offset) */
+  #smiley {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform:
+      translate(-50%, -50%)
+      rotate(90deg)
+      translateX(12%); /* moves eyes slightly right */
+    font-size: 10vw;
+    font-family: monospace;
+    color: rgba(255,255,255,0.85);
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  @media (max-width: 700px) {
+    #smiley {
+      font-size: 20vw; /* larger on mobile */
+      transform:
+        translate(-50%, -50%)
+        rotate(90deg)
+        translateX(18%); /* slightly stronger nudge for eyes */
     }
   }
 </style>
 </head>
+
 <body>
   <div class="game-container">
     <div class="bowls">
@@ -166,15 +192,11 @@
       <img src="../jpgs/bowl_purple.png" class="bowl" alt="Purple Bowl">
     </div>
 
-    <div class="fruits">
-      <img src="../jpgs/gummy_strawberry.png" class="fruit" alt="Strawberry">
-      <img src="../jpgs/gummy_orange.png" class="fruit" alt="Orange">
-      <img src="../jpgs/gummy_banana.png" class="fruit" alt="Banana">
-      <img src="../jpgs/gummy_apple.png" class="fruit" alt="Apple">
-      <img src="../jpgs/gummy_blueberry.png" class="fruit" alt="Blueberry">
-      <img src="../jpgs/gummy_berry.png" class="fruit" alt="Berry">
-    </div>
+    <div class="fruits"></div>
+    <div id="smiley">:)</div>
   </div>
+
+  <script src="interact.js"></script>
 </body>
 </html>
 
