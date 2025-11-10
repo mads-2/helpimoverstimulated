@@ -5,75 +5,73 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
 <title>Aquarium</title>
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden;
+html,body{margin:0;padding:0;height:100%;overflow:hidden;}
+#aquarium{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  background:url("../cropped/background.jpg") center/cover no-repeat;
+  overflow:hidden;
 }
-
-/* 🌊 Background */
-#aquarium {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  background: url("../cropped/background.jpg") center/cover no-repeat;
-  overflow: hidden;
+.bottom-object{
+  position:absolute;
+  pointer-events:none;
+  z-index:3;
+  transform-origin:bottom center;
 }
-
-/* 🪸 Bottom objects */
-.bottom-object {
-  position: absolute;
-  pointer-events: none;
-  z-index: 3;
-  transform-origin: bottom center;
+.fish{
+  position:absolute;
+  height:25vh;
+  width:auto;
+  z-index:5;
+  will-change:transform;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
 }
-
-/* 🐠 Fish */
-.fish {
-  position: absolute;
-  height: 25vh;
-  width: auto;
-  z-index: 5;
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+.fish.hidden{opacity:0;transition:opacity 1s ease;}
+.fish.jelly{height:35vh;}
+.fish.left{transform:scaleX(-1);}
+#overlay-layer{
+  position:absolute;left:0;top:0;width:100%;height:100%;
+  z-index:9999;pointer-events:none;
 }
-.fish.hidden { opacity: 0; transition: opacity 1s ease; }
-.fish.jelly { height: 35vh; }
-.fish.left { transform: scaleX(-1); }
+.select-box{
+  position:absolute;
+  border:2px solid rgba(0,255,0,0.85);
+  background-color:rgba(0,255,0,0.2);
+  box-sizing:border-box;
+  pointer-events:auto;
+  transition:border-color .2s ease,background-color .2s ease;
+}
+.select-box.active{
+  border-color:rgba(255,100,150,0.9);
+  background-color:rgba(255,150,180,0.25);
+}
 </style>
 </head>
 <body>
 <div id="aquarium"></div>
 
 <script>
-function rand(min, max){ return Math.random() * (max - min) + min; }
-
-/* === Detect if device is mobile === */
-function isMobileDevice() {
-  return (
-    /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-    (window.innerWidth < 900 && 'ontouchstart' in window)
-  );
+function rand(min,max){return Math.random()*(max-min)+min;}
+function isMobileDevice(){
+  return(/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||
+    (window.innerWidth<900&&'ontouchstart'in window));
 }
 
-/* === Fixed absolute positions for seaweed/anemone === */
-const fixedPositions = {
-  leftSeaweed:  { x: 22, yMin: 25, yMax: 38 },
-  leftAnemone:  { x: 19, yMin: 5,  yMax: 18 },
-  rightSeaweed: { x: 78, yMin: 25, yMax: 38 },
-  rightAnemone: { x: 81, yMin: 5,  yMax: 18 }
+const fixedPositions={
+  leftSeaweed:{x:22,yMin:25,yMax:38},
+  leftAnemone:{x:19,yMin:5,yMax:18},
+  rightSeaweed:{x:78,yMin:25,yMax:38},
+  rightAnemone:{x:81,yMin:5,yMax:18}
+};
+const baseZones={
+  crab:{x:50,yMin:10,yMax:25},
+  centerShell:{x:50,yMin:2,yMax:10}
 };
 
-/* === Other bottom zones === */
-const baseZones = {
-  crab:        { x: 50, yMin: 10, yMax: 25 },
-  centerShell: { x: 50, yMin: 2,  yMax: 10 }
-};
-
-/* === Place bottom objects === */
-async function placeObject(src, zone, sizeVHRange, tiltRange, invertChance=0.5, fixedX=null) {
+/* === placeObject === */
+async function placeObject(src,zone,sizeVHRange,tiltRange,invertChance=0.5,fixedX=null){
   return new Promise(resolve=>{
     const aquarium=document.getElementById("aquarium");
     const img=document.createElement("img");
@@ -87,7 +85,17 @@ async function placeObject(src, zone, sizeVHRange, tiltRange, invertChance=0.5, 
       const pxH=(sizeVH/100)*rect.height;
       const pxW=img.naturalWidth*(pxH/img.naturalHeight);
 
-      const x = rect.width * (fixedX / 100) - pxW / 2;
+      let x;
+      if(src.includes("bottom_anemone.png")){
+        x=rect.width*(fixedX/100)-pxW/2;
+      }else if(src.includes("bottom_shell.png")){
+        const xJitter=rand(-rect.width*0.002,rect.width*0.002);
+        x=rect.width*(fixedX/100)-pxW/2+xJitter;
+      }else{
+        const xJitter=rand(-rect.width*0.005,rect.width*0.005);
+        x=rect.width*(fixedX/100)-pxW/2+xJitter;
+      }
+
       const yMin=rect.height*zone.yMin/100;
       const yMax=rect.height*zone.yMax/100;
       const y=rand(yMin,yMax-pxH*0.4);
@@ -95,64 +103,46 @@ async function placeObject(src, zone, sizeVHRange, tiltRange, invertChance=0.5, 
       img.style.left=`${x}px`;
       img.style.bottom=`${y}px`;
 
-      const tilt=rand(tiltRange[0],tiltRange[1]);
-      const invert=Math.random()<invertChance?-1:1;
-      img.style.transform=`scaleX(${invert}) rotate(${tilt}deg)`;
+      let invert=1,tilt=0;
+      if(src.includes("bottom_anemone.png")){
+        if(fixedX<50){invert=-1;tilt=-3;}
+        else{invert=1;tilt=3;}
+      }else{
+        tilt=rand(tiltRange[0],tiltRange[1]);
+        invert=Math.random()<invertChance?-1:1;
+      }
 
+      img.style.transform=`scaleX(${invert}) rotate(${tilt}deg)`;
       aquarium.appendChild(img);
       resolve();
     };
   });
 }
 
-/* === Add bottom objects === */
-async function addBottomObjects() {
+/* === add bottom objects === */
+async function addBottomObjects(){
   const base="../cropped/";
   const mobile=isMobileDevice();
+  const seaweedSize=mobile?[20,25]:[40,47];
+  const anemoneSize=mobile?[18,23]:[36,43];
+  const crabSize=mobile?[18,22]:[30,35];
+  const shellSize=[25,30];
 
-  const seaweedSize = mobile ? [20,25] : [40,47];
-  const anemoneSize = mobile ? [18,23] : [36,43];
-  const crabSize = mobile ? [18,22] : [30,35];
-  const shellSize = [25,30];
-
-  const yOffset = mobile ? 6 : 0;
-
-  await placeObject(base+"bottom_seaweed.png", fixedPositions.leftSeaweed, seaweedSize, [-2,2], 0.5, fixedPositions.leftSeaweed.x);
-  await placeObject(base+"bottom_seaweed.png", fixedPositions.rightSeaweed, seaweedSize, [-2,2], 0.5, fixedPositions.rightSeaweed.x);
-
-  await placeObject(
-    base+"bottom_anemone.png",
-    { ...fixedPositions.leftAnemone, yMin: fixedPositions.leftAnemone.yMin + yOffset, yMax: fixedPositions.leftAnemone.yMax + yOffset },
-    anemoneSize, [-2,2], 0.5, fixedPositions.leftAnemone.x
-  );
-
-  await placeObject(
-    base+"bottom_anemone.png",
-    { ...fixedPositions.rightAnemone, yMin: fixedPositions.rightAnemone.yMin + yOffset, yMax: fixedPositions.rightAnemone.yMax + yOffset },
-    anemoneSize, [-2,2], 0.5, fixedPositions.rightAnemone.x
-  );
-
-  await placeObject(
-    base+"bottom_crab.png",
-    { ...baseZones.crab, yMin: baseZones.crab.yMin + (mobile ? 8 : 0), yMax: baseZones.crab.yMax + (mobile ? 8 : 0) },
-    crabSize, [0,0], 0.5, baseZones.crab.x
-  );
-
-  await placeObject(
-    base+"bottom_shell.png",
-    { ...baseZones.centerShell, yMin: baseZones.centerShell.yMin + (mobile ? 8 : 0), yMax: baseZones.centerShell.yMax + (mobile ? 8 : 0) },
-    shellSize, [-2,2], 0.5, baseZones.centerShell.x
-  );
+  await placeObject(base+"bottom_seaweed.png",fixedPositions.leftSeaweed,seaweedSize,[-2,2],0.5,fixedPositions.leftSeaweed.x);
+  await placeObject(base+"bottom_seaweed.png",fixedPositions.rightSeaweed,seaweedSize,[-2,2],0.5,fixedPositions.rightSeaweed.x);
+  await placeObject(base+"bottom_anemone.png",fixedPositions.leftAnemone,anemoneSize,[-2,2],0.5,fixedPositions.leftAnemone.x);
+  await placeObject(base+"bottom_anemone.png",fixedPositions.rightAnemone,anemoneSize,[-2,2],0.5,fixedPositions.rightAnemone.x);
+  await placeObject(base+"bottom_crab.png",baseZones.crab,crabSize,[0,0],0.5,baseZones.crab.x);
+  await placeObject(base+"bottom_shell.png",baseZones.centerShell,shellSize,[-2,2],0.5,baseZones.centerShell.x);
 }
 
-/* === 🐠 Fish Manager === */
-function spawnFishManager() {
-  const aquarium = document.getElementById("aquarium");
-  const width = aquarium.clientWidth;
-  const height = aquarium.clientHeight * 0.75;
-  const mobile = isMobileDevice();
-
-  const fishImages = [
+/* === fish manager === */
+function spawnFishManager(){
+  const aquarium=document.getElementById("aquarium");
+  const width=aquarium.clientWidth;
+  const height=aquarium.clientHeight*0.75;
+  const mobile=isMobileDevice();
+  const fishImages=[
     "../cropped/fish_blue_beta.png",
     "../cropped/fish_red_beta.png",
     "../cropped/fish_clown.png",
@@ -161,78 +151,57 @@ function spawnFishManager() {
     "../cropped/fish_seahorse.png",
     "../cropped/fish_jelly.png"
   ];
-
-  const targetCount = mobile ? 8 : 10;
-
-  function makeOneFish() {
-    const img = document.createElement("img");
-    const src = fishImages[Math.floor(Math.random() * fishImages.length)];
-    img.src = src;
-    img.classList.add("fish", "hidden");
-
-    // 🧩 Mobile — uniform size and color, no layering
-    if (mobile) {
-      const baseVH = src.includes("fish_jelly") ? 25 : 22;
-      img.style.height = `${baseVH}vh`;
-      img.style.filter = "brightness(1)";
-      img.style.zIndex = 5; // flat layer
-    } 
-    // 💻 Desktop — use varied scaling + brightness
-    else {
-      const sizeRoll = Math.random();
-      let scaleFactor, brightness, layer;
-      if (sizeRoll < 0.33) {
-        scaleFactor = 0.7;
-        brightness = 0.85;
-        layer = 3;
-      } else if (sizeRoll < 0.66) {
-        scaleFactor = 1.0;
-        brightness = 0.9;
-        layer = 4;
-      } else {
-        scaleFactor = 1.3;
-        brightness = 1.0;
-        layer = 6;
-      }
-      const baseVH = src.includes("fish_jelly") ? 28 : 25;
-      img.style.height = `${baseVH * scaleFactor}vh`;
-      img.style.filter = `brightness(${brightness})`;
-      img.style.zIndex = layer;
+  const targetCount=mobile?8:10;
+  function makeOneFish(){
+    const img=document.createElement("img");
+    const src=fishImages[Math.floor(Math.random()*fishImages.length)];
+    img.src=src;
+    img.classList.add("fish","hidden");
+    if(mobile){
+      const baseVH=src.includes("fish_jelly")?25:22;
+      img.style.height=`${baseVH}vh`;
+      img.style.filter="brightness(1)";
+      img.style.zIndex=5;
+    }else{
+      const r=Math.random();let s,b,l;
+      if(r<0.33){s=0.7;b=0.85;l=3;}
+      else if(r<0.66){s=1.0;b=0.9;l=4;}
+      else{s=1.3;b=1.0;l=6;}
+      const baseVH=src.includes("fish_jelly")?28:25;
+      img.style.height=`${baseVH*s}vh`;
+      img.style.filter=`brightness(${b})`;
+      img.style.zIndex=l;
     }
-
-    // random start pos
-    const x = Math.random() < 0.5 ? -200 : width + 200;
-    const y = rand(height * 0.1, height * 0.8);
-    img.style.left = `${x}px`;
-    img.style.top = `${y}px`;
-    if (x > width / 2) img.classList.add("left");
-
+    const x=Math.random()<0.5?-200:width+200;
+    const y=rand(height*0.1,height*0.8);
+    img.style.left=`${x}px`;
+    img.style.top=`${y}px`;
+    if(x>width/2)img.classList.add("left");
     aquarium.appendChild(img);
-    setTimeout(() => img.classList.remove("hidden"), 100);
+    setTimeout(()=>img.classList.remove("hidden"),100);
   }
-
-  // initial population
-  for (let i = 0; i < targetCount; i++) makeOneFish();
-
-  // periodic refresh (more consistent on mobile)
-  setInterval(() => {
-    const currentCount = document.querySelectorAll(".fish").length;
-    if (currentCount < targetCount) makeOneFish();
-  }, mobile ? 4000 : 3000);
+  for(let i=0;i<targetCount;i++)makeOneFish();
+  setInterval(()=>{
+    const count=document.querySelectorAll(".fish").length;
+    if(count<targetCount)makeOneFish();
+  },mobile?4000:3000);
 }
 </script>
 
-<!-- 🎞️ Load animation logic -->
+<!-- External JS files -->
 <script src="animation.js"></script>
+<script src="interact.js"></script>
 
-<!-- 🐠 Start everything once loaded -->
+<!-- Initialization -->
 <script>
-(async () => {
+(async()=>{
   await addBottomObjects();
   spawnFishManager();
   initAnimation();
+  initInteractivity();
 })();
 </script>
+
 </body>
 </html>
 
